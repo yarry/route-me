@@ -60,6 +60,8 @@ typedef enum : short {
 
 @interface RMTileCache : NSObject <RMTileCache>
 
+@property (readonly) RMMemoryCache* memoryCache;
+
 - (id)initWithExpiryPeriod:(NSTimeInterval)period;
 
 + (NSNumber *)tileHash:(RMTile)tile;

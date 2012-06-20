@@ -54,6 +54,8 @@
     dispatch_queue_t _tileCacheQueue;
 }
 
+@synthesize memoryCache;
+
 - (id)initWithExpiryPeriod:(NSTimeInterval)period
 {
     if (!(self = [super init]))
