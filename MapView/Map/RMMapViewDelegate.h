@@ -68,6 +68,7 @@ typedef enum : NSUInteger {
 - (void)tapOnAnnotation:(RMAnnotation *)annotation onMap:(RMMapView *)map;
 - (void)doubleTapOnAnnotation:(RMAnnotation *)annotation onMap:(RMMapView *)map;
 - (void)tapOnLabelForAnnotation:(RMAnnotation *)annotation onMap:(RMMapView *)map;
+- (void)tapOnLabelForAnnotation:(RMAnnotation *)annotation onLayer:(CALayer*)layer onMap:(RMMapView *)map;
 - (void)doubleTapOnLabelForAnnotation:(RMAnnotation *)annotation onMap:(RMMapView *)map;
 
 - (BOOL)mapView:(RMMapView *)map shouldDragAnnotation:(RMAnnotation *)annotation;

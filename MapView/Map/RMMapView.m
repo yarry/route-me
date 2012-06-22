@@ -112,6 +112,8 @@
     BOOL _delegateHasTapOnAnnotation;
     BOOL _delegateHasDoubleTapOnAnnotation;
     BOOL _delegateHasTapOnLabelForAnnotation;
+    BOOL _delegateHasTapOnLabelForAnnotationOnLayer;
+    
     BOOL _delegateHasDoubleTapOnLabelForAnnotation;
     BOOL _delegateHasShouldDragMarker;
     BOOL _delegateHasDidDragMarker;
@@ -410,6 +412,9 @@
     _delegateHasDoubleTapOnAnnotation = [_delegate respondsToSelector:@selector(doubleTapOnAnnotation:onMap:)];
     _delegateHasTapOnLabelForAnnotation = [_delegate respondsToSelector:@selector(tapOnLabelForAnnotation:onMap:)];
     _delegateHasDoubleTapOnLabelForAnnotation = [_delegate respondsToSelector:@selector(doubleTapOnLabelForAnnotation:onMap:)];
+
+    _delegateHasTapOnLabelForAnnotationOnLayer = [_delegate respondsToSelector:@selector(tapOnLabelForAnnotation:onLayer:onMap:)];
+
 
     _delegateHasShouldDragMarker = [_delegate respondsToSelector:@selector(mapView:shouldDragAnnotation:)];
     _delegateHasDidDragMarker = [_delegate respondsToSelector:@selector(mapView:didDragAnnotation:withDelta:)];
@@ -1120,6 +1125,36 @@
 }
 
 // Detect dragging/zooming
+
+- (void)mapOverlayView:(RMMapOverlayView *)aMapOverlayView tapOnLabelForAnnotation:(RMAnnotation *)anAnnotation onLayer:(CALayer*)layer atPoint:(CGPoint)aPoint
+{
+    if (_delegateHasTapOnLabelForAnnotationOnLayer && anAnnotation)
+    {
+        [_delegate tapOnLabelForAnnotation:anAnnotation onLayer:layer onMap:self];
+    }
+    else if (_delegateHasTapOnLabelForAnnotation && anAnnotation)
+    {
+        [_delegate tapOnLabelForAnnotation:anAnnotation onMap:self];
+    } else
+    {
+        if (_delegateHasSingleTapOnMap)
+            [_delegate singleTapOnMap:self at:aPoint];
+    }
+}
+
+- (void)mapOverlayView:(RMMapOverlayView *)aMapOverlayView tapOnLabelForAnnotation:(RMAnnotation *)anAnnotation atPoint:(CGPoint)aPoint
+{
+    if (_delegateHasTapOnLabelForAnnotation && anAnnotation)
+    {
+        [_delegate tapOnLabelForAnnotation:anAnnotation onMap:self];
+    }
+    else
+    {
+        if (_delegateHasSingleTapOnMap)
+            [_delegate singleTapOnMap:self at:aPoint];
+    }
+}
+
 
 - (void)scrollView:(RMMapScrollView *)aScrollView correctedContentOffset:(inout CGPoint *)aContentOffset
 {
