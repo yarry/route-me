@@ -130,11 +130,11 @@
         if ([delegate respondsToSelector:@selector(mapOverlayView:tapOnAnnotation:atPoint:)])
             [delegate mapOverlayView:self tapOnAnnotation:[((RMMarker *)hit) annotation] atPoint:[recognizer locationInView:self]];
     }
-    else if (superlayer != nil && [superlayer isKindOfClass:[RMMarker class]])
+/*    else if (superlayer != nil && [superlayer isKindOfClass:[RMMarker class]])
     {
         if ([delegate respondsToSelector:@selector(mapOverlayView:tapOnLabelForAnnotation:atPoint:)])
             [delegate mapOverlayView:self tapOnLabelForAnnotation:[((RMMarker *)superlayer) annotation] atPoint:[recognizer locationInView:self]];
-    }
+    }*/
     /*else if ([superlayer superlayer] != nil && [[superlayer superlayer] isKindOfClass:[RMMarker class]])
     {
         if ([delegate respondsToSelector:@selector(mapOverlayView:tapOnLabelForAnnotation:atPoint:)])
