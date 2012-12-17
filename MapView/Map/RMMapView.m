@@ -1126,7 +1126,7 @@
 
 // Detect dragging/zooming
 
-- (void)mapOverlayView:(RMMapOverlayView *)aMapOverlayView tapOnLabelForAnnotation:(RMAnnotation *)anAnnotation onLayer:(CALayer*)layer atPoint:(CGPoint)aPoint
+- (void)tapOnLabelForAnnotation:(RMAnnotation *)anAnnotation onLayer:(CALayer*)layer atPoint:(CGPoint)aPoint
 {
     if (_delegateHasTapOnLabelForAnnotationOnLayer && anAnnotation)
     {
@@ -1141,20 +1141,6 @@
             [_delegate singleTapOnMap:self at:aPoint];
     }
 }
-
-- (void)mapOverlayView:(RMMapOverlayView *)aMapOverlayView tapOnLabelForAnnotation:(RMAnnotation *)anAnnotation atPoint:(CGPoint)aPoint
-{
-    if (_delegateHasTapOnLabelForAnnotation && anAnnotation)
-    {
-        [_delegate tapOnLabelForAnnotation:anAnnotation onMap:self];
-    }
-    else
-    {
-        if (_delegateHasSingleTapOnMap)
-            [_delegate singleTapOnMap:self at:aPoint];
-    }
-}
-
 
 - (void)scrollView:(RMMapScrollView *)aScrollView correctedContentOffset:(inout CGPoint *)aContentOffset
 {
@@ -1326,25 +1312,25 @@
         return;
     }
 
-    CALayer *superlayer = [hit superlayer];
-
-    // See if tap was on a marker or marker label and send delegate protocol method
-    if ([hit isKindOfClass:[RMMarker class]])
-    {
-        [self tapOnAnnotation:[((RMMarker *)hit) annotation] atPoint:[recognizer locationInView:self]];
+    
+    CALayer *layer = hit;
+    
+    while(layer) {
+        CALayer *superlayer = [layer superlayer];
+        // See if tap was on a marker or marker label and send delegate protocol method
+        if ([layer isKindOfClass:[RMMarker class]])
+        {
+            [self tapOnAnnotation:[((RMMarker *)layer) annotation] atPoint:[recognizer locationInView:self]];
+            return;
+        }
+        else if (superlayer != nil && [superlayer isKindOfClass:[RMMarker class]])
+        {
+            [self tapOnLabelForAnnotation:[((RMMarker *)superlayer) annotation] onLayer:hit atPoint:[recognizer locationInView:self]];
+            return;
+        }
+        layer = superlayer;
     }
-    else if (superlayer != nil && [superlayer isKindOfClass:[RMMarker class]])
-    {
-        [self tapOnLabelForAnnotation:[((RMMarker *)superlayer) annotation] atPoint:[recognizer locationInView:self]];
-    }
-    else if ([superlayer superlayer] != nil && [[superlayer superlayer] isKindOfClass:[RMMarker class]])
-    {
-        [self tapOnLabelForAnnotation:[((RMMarker *)[superlayer superlayer]) annotation] atPoint:[recognizer locationInView:self]];
-    }
-    else
-    {
-        [self singleTapAtPoint:[recognizer locationInView:self]];
-    }
+    [self singleTapAtPoint:[recognizer locationInView:self]];
 }
 
 - (void)doubleTapAtPoint:(CGPoint)aPoint
