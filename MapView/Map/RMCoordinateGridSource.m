@@ -2,7 +2,7 @@
 //  RMCoordinateGridSource.m
 //  MapView
 //
-// Copyright (c) 2008-2012, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -76,12 +76,36 @@ static double coordinateGridSpacingDecimal[19] = {
     0.01, // 18
 };
 
+static double coordinateGridSpacingUTM[19] = {
+    1000000.0, // 0
+    1000000.0, // 1
+    1000000.0, // 2
+    1000000.0, // 3
+    1000000.0, // 4
+    1000000.0, // 5
+    640000.0, // 6
+    200000.0, // 7
+    160000.0, // 8
+    80000.0, // 9
+    40000.0, // 10
+    20000.0, // 11
+    10000.0, // 12
+    5000.0, // 13
+    2500.0, // 14
+    1000.0, // 15
+    500.0, // 16
+    200.0, // 17
+    100.0, // 18
+};
+
 @implementation RMCoordinateGridSource
+{
+    CoordinateGridMode _gridMode;
+}
 
 @synthesize gridColor = _gridColor;
 @synthesize gridLineWidth = _gridLineWidth;
 @synthesize gridLabelInterval = _gridLabelInterval;
-@synthesize gridMode = _gridMode;
 @synthesize minorLabelColor = _minorLabelColor;
 @synthesize minorLabelFont = _minorLabelFont;
 @synthesize majorLabelColor = _majorLabelColor;
@@ -109,6 +133,26 @@ static double coordinateGridSpacingDecimal[19] = {
     return self;
 }
 
+- (CoordinateGridMode)gridMode
+{
+    return _gridMode;
+}
+
+- (void)setGridMode:(CoordinateGridMode)gridMode
+{
+    _gridMode = gridMode;
+
+    switch (_gridMode) {
+        case GridModeUTM:
+            self.minZoom = 7;
+            break;
+
+        default:
+            self.minZoom = 5;
+            break;
+    }
+}
+
 - (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache
 {
     if (tile.zoom < 0 || tile.zoom > 18)
@@ -122,8 +166,26 @@ static double coordinateGridSpacingDecimal[19] = {
     if (image)
         return image;
 
-    // Implementation
+    if (self.gridMode == GridModeGeographic ||
+        self.gridMode == GridModeGeographicDecimal)
+    {
+        image = [self geographicGridImageForTile:tile];
+    }
+    else
+    {
+        image = [self utmGridImageForTile:tile];
+    }
 
+    if (image)
+        [tileCache addImage:image forTile:tile withCacheKey:[self uniqueTilecacheKey]];
+
+    return image;
+}
+
+#pragma mark - Geographic
+
+- (UIImage *)geographicGridImageForTile:(RMTile)tile
+{
     RMProjectedRect planetBounds = self.projection.planetBounds;
 
     double scale = (1<<tile.zoom);
@@ -155,7 +217,6 @@ static double coordinateGridSpacingDecimal[19] = {
             break;
         }
         case GridModeGeographicDecimal:
-        case GridModeUTM:
         default: {
             gridSpacing = coordinateGridSpacingDecimal[tile.zoom];
             break;
@@ -220,7 +281,6 @@ static double coordinateGridSpacingDecimal[19] = {
                     break;
                 }
                 case GridModeGeographicDecimal:
-                case GridModeUTM:
                 default: {
                     label1 = [NSString stringWithFormat:@"%.0f", degrees];
                     label2 = [NSString stringWithFormat:@"%02.0f", fraction * 100.0];
@@ -272,7 +332,6 @@ static double coordinateGridSpacingDecimal[19] = {
                     break;
                 }
                 case GridModeGeographicDecimal:
-                case GridModeUTM:
                 default: {
                     label1 = [NSString stringWithFormat:@"%.0f", degrees];
                     label2 = [NSString stringWithFormat:@"%02.0f", fraction * 100.0];
@@ -301,18 +360,333 @@ static double coordinateGridSpacingDecimal[19] = {
 
     // Image
 
-    image = UIGraphicsGetImageFromCurrentImageContext();
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
 	UIGraphicsEndImageContext();
 
     CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(kTileSidePadding, kTileSidePadding, self.tileSideLength, self.tileSideLength));
     image = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
 
-    if (image)
-        [tileCache addImage:image forTile:tile withCacheKey:[self uniqueTilecacheKey]];
+	return image;
+}
+
+#pragma mark - UTM
+
+#define kUTMGridSpacing 128
+
+- (void)drawUTMGridInContext:(CGContextRef)context
+                      xSteps:(NSUInteger)xSteps
+                     xBottom:(double)xBottom
+                      ySteps:(NSUInteger)ySteps
+                     yBottom:(double)yBottom
+                 gridSpacing:(double)gridSpacing
+     coordinateLongitudeSpan:(double)coordinatesLongitudeSpan
+      coordinateLatitudeSpan:(double)coordinatesLatitudeSpan
+        paddedTileSideLength:(double)paddedTileSideLength
+               utmZoneNumber:(int)utmZoneNumber
+               utmZoneLetter:(NSString *)utmZoneLetter
+     utmIsNorthernHemisphere:(BOOL)isNorthernHemisphere
+                   southWest:(CLLocationCoordinate2D)southWest
+{
+    // horizontal
+    for (NSUInteger currentYStep = 0; currentYStep < ySteps; ++currentYStep)
+    {
+        double row = yBottom + (currentYStep * gridSpacing);
+
+        BOOL firstColumn = YES;
+
+        for (NSUInteger currentXStep = 0; currentXStep < xSteps; ++currentXStep)
+        {
+            double column = xBottom + (currentXStep * gridSpacing);
+
+            CLLocationCoordinate2D coordinate;
+
+            [RMProjection convertUTMZoneNumber:utmZoneNumber
+                                 utmZoneLetter:utmZoneLetter
+                          isNorthernHemisphere:isNorthernHemisphere
+                                       easting:column
+                                      northing:row
+                                  toCoordinate:&coordinate];
+
+            CGFloat xCoordinate = ((coordinate.longitude - southWest.longitude) / coordinatesLongitudeSpan) * paddedTileSideLength;
+            CGFloat yCoordinate = paddedTileSideLength - (((coordinate.latitude - southWest.latitude) / coordinatesLatitudeSpan) * paddedTileSideLength);
+
+            if ((xCoordinate < 0.0 && yCoordinate < 0.0) ||
+                (xCoordinate > paddedTileSideLength && yCoordinate > paddedTileSideLength))
+                continue;
+
+            if (firstColumn)
+            {
+                CGContextMoveToPoint(context, xCoordinate, yCoordinate);
+                firstColumn = NO;
+            }
+            else
+            {
+                CGContextAddLineToPoint(context, xCoordinate, yCoordinate);
+            }
+        }
+    }
+
+    // vertical
+
+    for (NSUInteger currentXStep = 0; currentXStep < xSteps; ++currentXStep)
+    {
+        double column = xBottom + (currentXStep * gridSpacing);
+
+        BOOL firstColumn = YES;
+
+        for (NSUInteger currentYStep = 0; currentYStep < ySteps; ++currentYStep)
+        {
+            double row = yBottom + (currentYStep * gridSpacing);
+
+            CLLocationCoordinate2D coordinate;
+
+            [RMProjection convertUTMZoneNumber:utmZoneNumber
+                                 utmZoneLetter:utmZoneLetter
+                          isNorthernHemisphere:isNorthernHemisphere
+                                       easting:column
+                                      northing:row
+                                  toCoordinate:&coordinate];
+
+            CGFloat xCoordinate = ((coordinate.longitude - southWest.longitude) / coordinatesLongitudeSpan) * paddedTileSideLength;
+            CGFloat yCoordinate = paddedTileSideLength - (((coordinate.latitude - southWest.latitude) / coordinatesLatitudeSpan) * paddedTileSideLength);
+
+            if ((xCoordinate < 0.0 && yCoordinate < 0.0) ||
+                (xCoordinate > paddedTileSideLength && yCoordinate > paddedTileSideLength))
+                continue;
+
+            if (firstColumn)
+            {
+                CGContextMoveToPoint(context, xCoordinate, yCoordinate);
+                firstColumn = NO;
+            }
+            else
+            {
+                CGContextAddLineToPoint(context, xCoordinate, yCoordinate);
+            }
+        }
+    }
+
+    CGContextStrokePath(context);
+}
+
+- (UIImage *)utmGridImageForTile:(RMTile)tile
+{
+    RMProjectedRect planetBounds = self.projection.planetBounds;
+
+    double scale = (1<<tile.zoom);
+    double tileMetersPerPixel = planetBounds.size.width / (self.tileSideLength * scale);
+    double paddedTileSideLength = self.tileSideLength + (2.0 * kTileSidePadding);
+
+    CGPoint bottomLeft = CGPointMake((tile.x * self.tileSideLength) - kTileSidePadding,
+                                     ((scale - tile.y - 1) * self.tileSideLength) - kTileSidePadding);
+
+    RMProjectedRect normalizedProjectedRect;
+    normalizedProjectedRect.origin.x = (bottomLeft.x * tileMetersPerPixel) - fabs(planetBounds.origin.x);
+    normalizedProjectedRect.origin.y = (bottomLeft.y * tileMetersPerPixel) - fabs(planetBounds.origin.y);
+    normalizedProjectedRect.size.width = paddedTileSideLength * tileMetersPerPixel;
+    normalizedProjectedRect.size.height = paddedTileSideLength * tileMetersPerPixel;
+
+    CLLocationCoordinate2D southWest = [self.projection projectedPointToCoordinate:
+                                        RMProjectedPointMake(normalizedProjectedRect.origin.x,
+                                                             normalizedProjectedRect.origin.y)];
+
+    CLLocationCoordinate2D northEast = [self.projection projectedPointToCoordinate:
+                                        RMProjectedPointMake(normalizedProjectedRect.origin.x + normalizedProjectedRect.size.width,
+                                                             normalizedProjectedRect.origin.y + normalizedProjectedRect.size.height)];
+
+    double coordinatesLatitudeSpan = northEast.latitude - southWest.latitude,
+           coordinatesLongitudeSpan = northEast.longitude - southWest.longitude;
+
+    int utmZoneNumberLeft, utmZoneNumberRight;
+    NSString *utmZoneLetterLeft, *utmZoneLetterRight;
+    BOOL isNorthernHemisphereLeft, isNorthernHemisphereRight;
+
+    double xMin, yMin, xMax, yMax;
+
+    [RMProjection convertCoordinate:southWest
+                    toUTMZoneNumber:&utmZoneNumberLeft
+                      utmZoneLetter:&utmZoneLetterLeft
+               isNorthernHemisphere:&isNorthernHemisphereLeft
+                            easting:&xMin
+                           northing:&yMin];
+
+    [RMProjection convertCoordinate:northEast
+                    toUTMZoneNumber:&utmZoneNumberRight
+                      utmZoneLetter:&utmZoneLetterRight
+               isNorthernHemisphere:&isNorthernHemisphereRight
+                            easting:&xMax
+                           northing:&yMax];
+
+    double gridSpacing = coordinateGridSpacingUTM[tile.zoom];
+    BOOL hasZoneBorder = (utmZoneNumberLeft != utmZoneNumberRight);
+    double middleLongitude = (utmZoneNumberRight - 1)*6 - 180;
+
+    if (hasZoneBorder)
+    {
+        [RMProjection convertCoordinate:CLLocationCoordinate2DMake(northEast.latitude, middleLongitude-0.00001)
+                        toUTMZoneNumber:&utmZoneNumberRight
+                          utmZoneLetter:&utmZoneLetterRight
+                   isNorthernHemisphere:&isNorthernHemisphereRight
+                                easting:&xMax
+                               northing:&yMax];
+    }
+
+    NSUInteger xBottom = (NSUInteger)(xMin - fmod(xMin, gridSpacing));
+    NSUInteger xTop    = (NSUInteger)(xMax - fmod(xMax, gridSpacing)) + (3 * gridSpacing);
+    NSUInteger yBottom = (NSUInteger)(yMin - fmod(yMin, gridSpacing));
+    NSUInteger yTop    = (NSUInteger)(yMax - fmod(yMax, gridSpacing)) + (3 * gridSpacing);
+
+    NSUInteger xSteps = (xTop - xBottom) / gridSpacing;
+    NSUInteger ySteps = (yTop - yBottom) / gridSpacing;
+
+    // Draw the tile
+
+	UIGraphicsBeginImageContext(CGSizeMake(paddedTileSideLength, paddedTileSideLength));
+	CGContextRef context = UIGraphicsGetCurrentContext();
+
+    CGContextSetStrokeColorWithColor(context, self.gridColor.CGColor);
+    CGContextSetLineWidth(context, self.gridLineWidth);
+
+    CGContextSaveGState(context);
+
+    // Clipping
+    if (hasZoneBorder)
+    {
+        // Zone border
+        CGFloat xCoordinate = ((middleLongitude - southWest.longitude) / coordinatesLongitudeSpan) * paddedTileSideLength;
+        CGFloat yCoordinate = paddedTileSideLength - (((northEast.latitude - southWest.latitude) / coordinatesLatitudeSpan) * paddedTileSideLength);
+
+        CGContextMoveToPoint(context, xCoordinate, yCoordinate);
+
+        yCoordinate = paddedTileSideLength ;
+        CGContextAddLineToPoint(context, xCoordinate, yCoordinate);
+
+        CGContextStrokePath(context);
+
+        // Left part
+        CGContextClipToRect(context, CGRectMake(0.0, 0.0, xCoordinate, paddedTileSideLength));
+
+        // Grid lines left
+        [self drawUTMGridInContext:context
+                            xSteps:xSteps
+                           xBottom:xBottom
+                            ySteps:ySteps
+                           yBottom:yBottom
+                       gridSpacing:gridSpacing
+           coordinateLongitudeSpan:coordinatesLongitudeSpan
+            coordinateLatitudeSpan:coordinatesLatitudeSpan
+              paddedTileSideLength:paddedTileSideLength
+                     utmZoneNumber:utmZoneNumberLeft
+                     utmZoneLetter:utmZoneLetterLeft
+           utmIsNorthernHemisphere:isNorthernHemisphereLeft
+                         southWest:southWest];
+
+        CGContextRestoreGState(context);
+
+        // Right part
+        [RMProjection convertCoordinate:CLLocationCoordinate2DMake(southWest.latitude, middleLongitude)
+                        toUTMZoneNumber:&utmZoneNumberLeft
+                          utmZoneLetter:&utmZoneLetterLeft
+                   isNorthernHemisphere:&isNorthernHemisphereLeft
+                                easting:&xMin
+                               northing:&yMin];
+
+        [RMProjection convertCoordinate:northEast
+                        toUTMZoneNumber:&utmZoneNumberRight
+                          utmZoneLetter:&utmZoneLetterRight
+                   isNorthernHemisphere:&isNorthernHemisphereRight
+                                easting:&xMax
+                               northing:&yMax];
+
+        xBottom = (NSUInteger)(xMin - fmod(xMin, gridSpacing)) - gridSpacing;
+        xTop    = (NSUInteger)(xMax - fmod(xMax, gridSpacing)) + (3 * gridSpacing);
+        yBottom = (NSUInteger)(yMin - fmod(yMin, gridSpacing)) - gridSpacing;
+        yTop    = (NSUInteger)(yMax - fmod(yMax, gridSpacing)) + (3 * gridSpacing);
+
+        xSteps = (xTop - xBottom) / gridSpacing;
+        ySteps = (yTop - yBottom) / gridSpacing;
+
+        // Reset the left values
+        CGContextSaveGState(context);
+
+        CGContextClipToRect(context, CGRectMake(xCoordinate, 0.0, paddedTileSideLength, paddedTileSideLength));
+    }
+
+    [self drawUTMGridInContext:context
+                        xSteps:xSteps
+                       xBottom:xBottom
+                        ySteps:ySteps
+                       yBottom:yBottom
+                   gridSpacing:gridSpacing
+       coordinateLongitudeSpan:coordinatesLongitudeSpan
+        coordinateLatitudeSpan:coordinatesLatitudeSpan
+          paddedTileSideLength:paddedTileSideLength
+                 utmZoneNumber:utmZoneNumberLeft
+                 utmZoneLetter:utmZoneLetterLeft
+       utmIsNorthernHemisphere:isNorthernHemisphereLeft
+                     southWest:southWest];
+
+    CGContextRestoreGState(context);
+
+    // Labels
+
+    for (NSUInteger currentXStep = 0; currentXStep < xSteps; ++currentXStep)
+    {
+        double column = xBottom + (currentXStep * gridSpacing);
+
+        for (NSUInteger currentYStep = 0; currentYStep < ySteps; ++currentYStep)
+        {
+            double row = yBottom + (currentYStep * gridSpacing);
+
+            CLLocationCoordinate2D coordinate;
+
+            [RMProjection convertUTMZoneNumber:utmZoneNumberLeft
+                                 utmZoneLetter:utmZoneLetterLeft
+                          isNorthernHemisphere:isNorthernHemisphereLeft
+                                       easting:column
+                                      northing:row
+                                  toCoordinate:&coordinate];
+
+            CGFloat xCoordinate = ((coordinate.longitude - southWest.longitude) / coordinatesLongitudeSpan) * paddedTileSideLength;
+            CGFloat yCoordinate = paddedTileSideLength - (((coordinate.latitude - southWest.latitude) / coordinatesLatitudeSpan) * paddedTileSideLength);
+
+            if ((xCoordinate < 0.0 && yCoordinate < 0.0) ||
+                (xCoordinate > paddedTileSideLength && yCoordinate > paddedTileSideLength))
+                continue;
+
+            NSString *label = [NSString stringWithFormat:@"%d%@ %.0f %.0f", utmZoneNumberLeft, utmZoneLetterLeft, column, row];
+
+            @synchronized (self)
+            {
+                CGSize labelSize = [label sizeWithFont:self.majorLabelFont];
+
+                CGFloat upperBorder = yCoordinate - (labelSize.height / 2.0);
+                CGRect labelBackgroundRect = CGRectMake(xCoordinate - (labelSize.width / 2.0) - 4.0, upperBorder - 1.0, labelSize.width + 8.0, labelSize.height + 2.0);
+
+                CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
+                UIRectFill(labelBackgroundRect);
+
+                CGContextSetFillColorWithColor(context, self.majorLabelColor.CGColor);
+                [label drawAtPoint:CGPointMake(xCoordinate - (labelSize.width / 2.0) - 1.0, upperBorder) withFont:self.majorLabelFont];
+            }
+        }
+    }
+
+
+    // Image
+
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+
+    CGImageRef imageRef = CGImageCreateWithImageInRect([image CGImage], CGRectMake(kTileSidePadding, kTileSidePadding, self.tileSideLength, self.tileSideLength));
+    image = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
 
 	return image;
 }
+
+#pragma mark - Tilesource
 
 - (NSString *)uniqueTilecacheKey
 {
