@@ -498,4 +498,5 @@ typedef NS_ENUM(NSUInteger, RMMapDecelerationMode) {
 *   @param animated Whether changes to the map center or rotation should be animated when the mode is changed. */
 - (void)setUserTrackingMode:(RMUserTrackingMode)mode animated:(BOOL)animated;
 
+- (void)setUseSnapshotRenderer:(BOOL)useSnapshotRenderer;
 @end

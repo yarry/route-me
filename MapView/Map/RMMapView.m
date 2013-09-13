@@ -1907,19 +1907,23 @@
 #pragma mark -
 #pragma mark Snapshots
 
+- (void)setUseSnapshotRenderer:(BOOL)useSnapshotRenderer
+{
+    for (RMMapTiledLayerView *tiledLayerView in _tiledLayersSuperview.subviews)
+        tiledLayerView.useSnapshotRenderer = useSnapshotRenderer;
+}
+
 - (UIImage *)takeSnapshotAndIncludeOverlay:(BOOL)includeOverlay
 {
     _overlayView.hidden = !includeOverlay;
 
     UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, [[UIScreen mainScreen] scale]);
 
-    for (RMMapTiledLayerView *tiledLayerView in _tiledLayersSuperview.subviews)
-        tiledLayerView.useSnapshotRenderer = YES;
+    self.useSnapshotRenderer = YES;
 
     [self.layer renderInContext:UIGraphicsGetCurrentContext()];
 
-    for (RMMapTiledLayerView *tiledLayerView in _tiledLayersSuperview.subviews)
-        tiledLayerView.useSnapshotRenderer = NO;
+    self.useSnapshotRenderer = NO;
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
 
@@ -3477,5 +3481,6 @@
         }
     }
 }
+
 
 @end
