@@ -2873,8 +2873,10 @@
         return NSOrderedSame;
     }];
 
-    for (CGFloat i = 0; i < [sortedAnnotations count]; i++)
+    for (CGFloat i = 0; i < [sortedAnnotations count]; i++) {
         ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
+    }
+
 
     // bring any active callout annotation to the front
     //
@@ -2923,7 +2925,13 @@
 
         if (annotation.layer)
         {
-            [_overlayView addSublayer:annotation.layer];
+            if([annotation.layer isKindOfClass:[RMShape class]]) {
+                [_overlayView insertSublayer:annotation.layer atIndex:0];
+            }
+            else {
+                [_overlayView addSublayer:annotation.layer];
+            }
+
 
             @synchronized (_annotations)
             {
