@@ -1917,7 +1917,10 @@
 {
     _overlayView.hidden = !includeOverlay;
 
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, [[UIScreen mainScreen] scale]);
+    float scale = [[UIScreen mainScreen] scale];
+    scale = 1.0;
+
+    UIGraphicsBeginImageContextWithOptions(self.bounds.size, self.opaque, scale);
 
     self.useSnapshotRenderer = YES;
 
