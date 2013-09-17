@@ -98,6 +98,7 @@
     }
 }
 
+
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)context
 {
     CGRect rect   = CGContextGetClipBoundingBox(context);
@@ -108,7 +109,13 @@
 
     if (self.useSnapshotRenderer)
     {
+        RMTileFetchOptions options = RMTileFetchCacheOnly;
+        if(_mapView.screenScale > 1.0) {
+            options |= RMTileFetchLowQuality;
+        }
+
         zoom = (short)ceilf(_mapView.adjustedZoomForRetinaDisplay);
+
         CGFloat rectSize = bounds.size.width / powf(2.0, (float)zoom);
 
         int x1 = floor(rect.origin.x / rectSize),
@@ -116,7 +123,6 @@
             y1 = floor(fabs(rect.origin.y / rectSize)),
             y2 = floor(fabs((rect.origin.y + rect.size.height) / rectSize));
 
-//        NSLog(@"Tiles from x1:%d, y1:%d to x2:%d, y2:%d @ zoom %d", x1, y1, x2, y2, zoom);
 
         if (zoom >= _tileSource.minZoom && zoom <= _tileSource.maxZoom)
         {
@@ -127,7 +133,7 @@
                 for (int y=y1; y<=y2; ++y)
                 {
                     UIImage *tileImage =
-                            [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache] options:(RMTileFetchCacheOnly)];
+                            [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache] options:options];
 
                     if (IS_VALID_TILE_IMAGE(tileImage))
                         [tileImage drawInRect:CGRectMake(x * rectSize, y * rectSize, rectSize, rectSize)];

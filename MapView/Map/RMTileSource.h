@@ -38,6 +38,7 @@ typedef enum
 {
     RMTileFetchDefault = 0,
     RMTileFetchCacheOnly = 1 << 0,
+    RMTileFetchLowQuality = 1 << 1,
 } RMTileFetchOptions;
 
 @class RMFractalTileProjection, RMTileCache, RMProjection, RMTileImage, RMTileCache;
