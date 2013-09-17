@@ -153,7 +153,7 @@ static double coordinateGridSpacingUTM[19] = {
     }
 }
 
-- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache
+- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache options:(RMTileFetchOptions)options
 {
     if (tile.zoom < 0 || tile.zoom > 18)
         return nil;

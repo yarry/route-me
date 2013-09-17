@@ -71,7 +71,7 @@
     return [NSArray arrayWithObjects:[self URLForTile:tile], nil];
 }
 
-- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache
+- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache options:(RMTileFetchOptions)options
 {
     __block UIImage *image = nil;
 
@@ -88,6 +88,10 @@
 
         if (image)
             return image;
+    }
+
+    if(options & RMTileFetchCacheOnly) {
+        return nil;
     }
 
     dispatch_async(dispatch_get_main_queue(), ^(void)

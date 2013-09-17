@@ -94,8 +94,6 @@
     CGRect bounds = self.bounds;
     short zoom    = log2(bounds.size.width / rect.size.width);
 
-//    NSLog(@"drawLayer: {{%f,%f},{%f,%f}}", rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-
     NSAutoreleasePool *pool = [NSAutoreleasePool new];
 
     if (self.useSnapshotRenderer)
@@ -118,7 +116,8 @@
             {
                 for (int y=y1; y<=y2; ++y)
                 {
-                    UIImage *tileImage = [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache]];
+                    UIImage *tileImage =
+                            [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache] options:(RMTileFetchCacheOnly)];
 
                     if (IS_VALID_TILE_IMAGE(tileImage))
                         [tileImage drawInRect:CGRectMake(x * rectSize, y * rectSize, rectSize, rectSize)];
@@ -147,7 +146,8 @@
         UIImage *tileImage = nil;
 
         if (zoom >= _tileSource.minZoom && zoom <= _tileSource.maxZoom)
-            tileImage = [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache]];
+            tileImage =
+                    [_tileSource imageForTile:RMTileMake(x, y, zoom) inCache:[_mapView tileCache] options:(RMTileFetchDefault)];
 
         if ( ! tileImage)
         {
@@ -167,7 +167,8 @@
                     float nextTileX = floor(nextX),
                           nextTileY = floor(nextY);
 
-                    tileImage = [_tileSource imageForTile:RMTileMake((int)nextTileX, (int)nextTileY, currentZoom) inCache:[_mapView tileCache]];
+                    tileImage =
+                            [_tileSource imageForTile:RMTileMake((int) nextTileX, (int) nextTileY, currentZoom) inCache:[_mapView tileCache] options:(RMTileFetchDefault)];
 
                     if (IS_VALID_TILE_IMAGE(tileImage))
                     {

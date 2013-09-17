@@ -29,6 +29,7 @@
 #import "RMTileImage.h"
 #import "RMFractalTileProjection.h"
 #import "RMProjection.h"
+#import "RMTileCache.h"
 
 @implementation RMAbstractMercatorTileSource
 {
@@ -65,10 +66,10 @@
     return kDefaultLatLonBoundingBox;
 }
 
-- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache
+- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache options:(RMTileFetchOptions)options
 {
     @throw [NSException exceptionWithName:@"RMAbstractMethodInvocation"
-                                   reason:@"imageForTile:inCache: invoked on RMAbstractMercatorTileSource. Override this method when instantiating an abstract class."
+                                   reason:@"imageForTile:inCache:options: invoked on RMAbstractMercatorTileSource. Override this method when instantiating an abstract class."
                                  userInfo:nil];
 }    
 
