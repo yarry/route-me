@@ -80,6 +80,20 @@
     _mapZooming = zooming;
 }
 
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+
+    CGRect frame = self.frame;
+
+    _contentView.frame = CGRectMake(0, 0, frame.size.width * 3, frame.size.height * 3);
+
+    self.contentSize = _contentView.bounds.size;
+    self.contentOffset = CGPointMake(self.frame.size.width, self.frame.size.height);
+
+}
+
+
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     CGPoint newContentOffset = contentOffset;
