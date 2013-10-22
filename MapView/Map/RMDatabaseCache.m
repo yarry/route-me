@@ -245,7 +245,14 @@
 - (void)addImage:(UIImage *)image forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey
 {
     // TODO: Converting the image here (again) is not so good...
-	NSData *data = UIImagePNGRepresentation(image);
+    NSData *data= nil;
+    @try {
+
+        data = UIImagePNGRepresentation(image);
+    }
+    @catch(NSException* exception) {
+        return;
+    }
 
     if (_capacity != 0)
     {
