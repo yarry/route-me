@@ -207,6 +207,8 @@
         }
     }
 
+    image = [self imageWithImage:image];
+
     if (image && self.isCacheable)
         [tileCache addImage:image forTile:tile withCacheKey:[self uniqueTilecacheKey]];
 
@@ -217,12 +219,60 @@
 
     [tileCache release];
 
-    dispatch_async(dispatch_get_main_queue(), ^(void)
-    {
-        [[NSNotificationCenter defaultCenter] postNotificationName:RMTileRetrieved object:[NSNumber numberWithUnsignedLongLong:RMTileKey(tile)]];
-    });
+    if(image) {
+        dispatch_async(dispatch_get_main_queue(), ^(void)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:RMTileRetrieved object:[NSNumber numberWithUnsignedLongLong:RMTileKey(tile)]];
+        });
+    }
 
     return image;
+}
+
+- (UIImage*)imageWithImage:(UIImage*)image
+{
+    CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
+
+    //create a context to do our clipping in
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef currentContext = UIGraphicsGetCurrentContext();
+
+    //create a rect with the size we want to crop the image to
+    //the X and Y here are zero so we start at the beginning of our
+    //newly created context
+    CGRect clippedRect = CGRectMake(0, 0, rect.size.width, rect.size.height);
+    CGContextClipToRect( currentContext, clippedRect);
+
+    //create a rect equivalent to the full size of the image
+    //offset the rect by the X and Y we want to start the crop
+    //from in order to cut off anything before them
+    CGRect drawRect = CGRectMake(rect.origin.x * -1,
+            rect.origin.y * -1,
+            image.size.width,
+            image.size.height);
+
+    //draw the image to our clipped context using our offset rect
+    CGContextTranslateCTM(currentContext, 0.0, rect.size.height);
+    CGContextScaleCTM(currentContext, 1.0, -1.0);
+    CGContextDrawImage(currentContext, drawRect, image.CGImage);
+
+    UIImage *cropped = nil;
+
+    unsigned char* data = CGBitmapContextGetData (currentContext);
+    if (data != NULL) {
+        int alpha =  data[0];
+        if(alpha != 0) {
+            //pull the image from our cropped context
+
+            cropped = UIGraphicsGetImageFromCurrentImageContext();
+        }
+    }
+
+    //pop the context to get back to the default
+    UIGraphicsEndImageContext();
+
+    //Note: this is autoreleased
+    return cropped;
 }
 
 @end

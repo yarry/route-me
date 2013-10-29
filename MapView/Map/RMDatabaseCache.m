@@ -242,97 +242,56 @@
 	return cachedImage;
 }
 
-- (UIImage*)imageWithImage:(UIImage*)image
-{
-    CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
-
-    //create a context to do our clipping in
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef currentContext = UIGraphicsGetCurrentContext();
-
-    //create a rect with the size we want to crop the image to
-    //the X and Y here are zero so we start at the beginning of our
-    //newly created context
-    CGRect clippedRect = CGRectMake(0, 0, rect.size.width, rect.size.height);
-    CGContextClipToRect( currentContext, clippedRect);
-
-    //create a rect equivalent to the full size of the image
-    //offset the rect by the X and Y we want to start the crop
-    //from in order to cut off anything before them
-    CGRect drawRect = CGRectMake(rect.origin.x * -1,
-            rect.origin.y * -1,
-            image.size.width,
-            image.size.height);
-
-    //draw the image to our clipped context using our offset rect
-    CGContextTranslateCTM(currentContext, 0.0, rect.size.height);
-    CGContextScaleCTM(currentContext, 1.0, -1.0);
-    CGContextDrawImage(currentContext, drawRect, image.CGImage);
-
-    //pull the image from our cropped context
-    UIImage *cropped = UIGraphicsGetImageFromCurrentImageContext();
-
-    //pop the context to get back to the default
-    UIGraphicsEndImageContext();
-
-    //Note: this is autoreleased
-    return cropped;
-}
-
 - (void)addImage:(UIImage *)image forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey
 {
-    // TODO: Converting the image here (again) is not so good...
-    NSData *data= nil;
-    NSLog(@"aCacheKey = %@ %d %d %d %f %f", aCacheKey,(int)tile.x,(int)tile.y,(int)tile.zoom, image.size.width,image.size.height);
-    @try {
-        data = UIImagePNGRepresentation([self imageWithImage:image]);
-    }
-    @catch(NSException* exception) {
-        return;
-    }
+    @autoreleasepool {
 
-    if (_capacity != 0)
-    {
-        NSUInteger tilesInDb = [self count];
+        // TODO: Converting the image here (again) is not so good...
+        NSData *data= nil;
+        data = UIImagePNGRepresentation(image);
 
-        if (_capacity <= tilesInDb && _expiryPeriod == 0)
-            [self purgeTiles:MAX(_minimalPurge, 1+tilesInDb-_capacity)];
+        if (_capacity != 0)
+        {
+            NSUInteger tilesInDb = [self count];
 
-//        RMLog(@"DB cache     insert tile %d %d %d (%@)", tile.x, tile.y, tile.zoom, [RMTileCache tileHash:tile]);
+            if (_capacity <= tilesInDb && _expiryPeriod == 0)
+                [self purgeTiles:MAX(_minimalPurge, 1+tilesInDb-_capacity)];
 
-        // Don't add new images to the database while there are still more than kWriteQueueLimit
-        // insert operations pending. This prevents some memory issues.
+            // RMLog(@"DB cache     insert tile %d %d %d (%@)", tile.x, tile.y, tile.zoom, [RMTileCache tileHash:tile]);
+            // Don't add new images to the database while there are still more than kWriteQueueLimit
+            // insert operations pending. This prevents some memory issues.
 
-        BOOL skipThisTile = NO;
-
-        [_writeQueueLock lock];
-
-        if ([_writeQueue operationCount] > kWriteQueueLimit)
-            skipThisTile = YES;
-
-        [_writeQueueLock unlock];
-
-        if (skipThisTile)
-            return;
-
-        [_writeQueue addOperationWithBlock:^{
-            __block BOOL result = NO;
+            BOOL skipThisTile = NO;
 
             [_writeQueueLock lock];
 
-            [_queue inDatabase:^(FMDatabase *db)
-             {
-                 result = [db executeUpdate:@"INSERT OR IGNORE INTO ZCACHE (tile_hash, cache_key, last_used, data) VALUES (?, ?, ?, ?)", [RMTileCache tileHash:tile], aCacheKey, [NSDate date], data];
-             }];
+            if ([_writeQueue operationCount] > kWriteQueueLimit)
+                skipThisTile = YES;
 
             [_writeQueueLock unlock];
 
-            if (result == NO)
-                RMLog(@"Error occured adding data");
-            else
-                _tileCount++;
-        }];
-	}
+            if (skipThisTile)
+                return;
+
+            [_writeQueue addOperationWithBlock:^{
+                __block BOOL result = NO;
+
+                [_writeQueueLock lock];
+
+                [_queue inDatabase:^(FMDatabase *db)
+                 {
+                     result = [db executeUpdate:@"INSERT OR IGNORE INTO ZCACHE (tile_hash, cache_key, last_used, data) VALUES (?, ?, ?, ?)", [RMTileCache tileHash:tile], aCacheKey, [NSDate date], data];
+                 }];
+
+                [_writeQueueLock unlock];
+
+                if (result == NO)
+                    RMLog(@"Error occured adding data");
+                else
+                    _tileCount++;
+            }];
+        }
+    }
 }
 
 #pragma mark -
