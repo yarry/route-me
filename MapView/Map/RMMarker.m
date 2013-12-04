@@ -194,6 +194,17 @@
     }
 }
 
+- (void)showLabelAnimated:(BOOL)animated
+{
+    if(animated) {
+        [self showLabel];
+    }
+    else {
+        self.actions = @{@"sublayers":[NSNull null]};
+        [self showLabel];
+    }
+}
+
 - (void)hideLabel
 {
     if (![self.label isHidden])
@@ -201,6 +212,17 @@
         // Using removeFromSuperlayer will animate hiding the label, whereas setHidden is not animated
         [[self.label layer] removeFromSuperlayer];
         [self.label setHidden:YES];
+    }
+}
+
+- (void)hideLabelAnimated:(BOOL)animated
+{
+    if(animated) {
+        [self hideLabel];
+    }
+    else {
+        self.actions = @{@"sublayers":[NSNull null]};
+        [self hideLabel];
     }
 }
 

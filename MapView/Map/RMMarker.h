@@ -93,12 +93,16 @@
 /** Show the marker's label, if any. */
 - (void)showLabel;
 
+- (void)showLabelAnimated:(BOOL)animated;
+
 /** Hide the marker's label, if any. */
 - (void)hideLabel;
 
 /** @name Altering Images */
 
-/** Replace the image for a marker. 
+- (void)hideLabelAnimated:(BOOL)animated;
+
+/** Replace the image for a marker.
 *   @param image An image to use for the marker. */
 - (void)replaceUIImage:(UIImage *)image;
 
