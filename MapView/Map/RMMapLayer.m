@@ -27,14 +27,25 @@
 
 #import "RMMapLayer.h"
 #import "RMPixel.h"
+#import "RMAnnotation.h"
+#import "RMMapView.h"
+#import "RMMarker.h"
+
+@interface RMMapView (PrivateMethods)
+
+- (void)annotation:(RMAnnotation *)annotation didChangeDragState:(RMMapLayerDragState)newState fromOldState:(RMMapLayerDragState)oldState;
+
+@end
+
+#pragma mark -
 
 @implementation RMMapLayer
 
 @synthesize annotation;
 @synthesize projectedLocation;
-@synthesize enableDragging;
+@synthesize dragState=_dragState;
 @synthesize userInfo;
-@synthesize canShowCallout;
+@synthesize canShowCallout=_canShowCallout;
 @synthesize calloutOffset;
 @synthesize leftCalloutAccessoryView;
 @synthesize rightCalloutAccessoryView;
@@ -45,7 +56,6 @@
 		return nil;
 
     self.annotation = nil;
-    self.enableDragging = NO;
     self.calloutOffset = CGPointZero;
 
 	return self;
@@ -63,16 +73,50 @@
     return self;
 }
 
-- (void)dealloc
+- (void)setCanShowCallout:(BOOL)canShowCallout
 {
-    self.annotation = nil;
-    self.userInfo = nil;
-    [super dealloc];
+    if (canShowCallout)
+    {
+        NSAssert([self isKindOfClass:[RMMarker class]],  @"Callouts are not supported on non-marker annotation layers");
+        NSAssert( ! self.annotation.isClusterAnnotation, @"Callouts are not supported on cluster annotation layers");
+    }
+
+    _canShowCallout = canShowCallout;
 }
 
 - (void)setPosition:(CGPoint)position animated:(BOOL)animated
 {
     [self setPosition:position];
+}
+
+- (void)setDragState:(RMMapLayerDragState)dragState
+{
+    [self setDragState:dragState animated:NO];
+}
+
+- (void)setDragState:(RMMapLayerDragState)dragState animated:(BOOL)animated
+{
+    RMMapLayerDragState oldDragState = _dragState;
+
+    if (dragState == RMMapLayerDragStateStarting)
+    {
+        _dragState = RMMapLayerDragStateDragging;
+    }
+    else if (dragState == RMMapLayerDragStateDragging)
+    {
+        _dragState = RMMapLayerDragStateDragging;
+    }
+    else if (dragState == RMMapLayerDragStateCanceling || dragState == RMMapLayerDragStateEnding)
+    {
+        _dragState = RMMapLayerDragStateNone;
+    }
+    else if (dragState == RMMapLayerDragStateNone)
+    {
+        _dragState = RMMapLayerDragStateNone;
+    }
+
+    if (_dragState != oldDragState)
+        [self.annotation.mapView annotation:self.annotation didChangeDragState:_dragState fromOldState:oldDragState];
 }
 
 /// return nil for certain animation keys to block core animation

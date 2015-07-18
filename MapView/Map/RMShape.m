@@ -44,7 +44,7 @@
 
     NSMutableArray *points;
 
-    RMMapView *mapView;
+    __weak RMMapView *mapView;
 }
 
 @synthesize scaleLineWidth;
@@ -91,20 +91,11 @@
     scaleLineDash = NO;
     isFirstPoint = YES;
 
-    points = [[NSMutableArray array] retain];
+    points = [NSMutableArray array];
 
     [(id)self setValue:[[UIScreen mainScreen] valueForKey:@"scale"] forKey:@"contentsScale"];
 
     return self;
-}
-
-- (void)dealloc
-{
-    mapView = nil;
-    [bezierPath release]; bezierPath = nil;
-    [shapeLayer release]; shapeLayer = nil;
-    [points release]; points = nil;
-    [super dealloc];
 }
 
 - (id <CAAction>)actionForKey:(NSString *)key
@@ -131,6 +122,9 @@
         scaledLineWidth = lineWidth;
 
     shapeLayer.lineWidth = scaledLineWidth;
+
+    if (self.fillPatternImage)
+        shapeLayer.fillColor = [[UIColor colorWithPatternImage:self.fillPatternImage] CGColor];
 
     if (lineDashLengths)
     {
@@ -178,8 +172,6 @@
         // calculate the bounds of the scaled path
         CGRect boundsInMercators = scaledPath.bounds;
         nonClippedBounds = CGRectInset(boundsInMercators, -scaledLineWidth - (2 * shapeLayer.shadowRadius), -scaledLineWidth - (2 * shapeLayer.shadowRadius));
-
-        [scaledPath release];
     }
 
     // if the path is not scaled, nonClippedBounds stay the same as in the previous invokation
@@ -291,7 +283,7 @@
 
 - (void)addCurveToProjectedPoint:(RMProjectedPoint)point controlPoint1:(RMProjectedPoint)controlPoint1 controlPoint2:(RMProjectedPoint)controlPoint2 withDrawing:(BOOL)isDrawing
 {
-    [points addObject:[[[CLLocation alloc] initWithLatitude:[mapView projectedPointToCoordinate:point].latitude longitude:[mapView projectedPointToCoordinate:point].longitude] autorelease]];
+    [points addObject:[[CLLocation alloc] initWithLatitude:[mapView projectedPointToCoordinate:point].latitude longitude:[mapView projectedPointToCoordinate:point].longitude]];
 
     if (isFirstPoint)
     {
@@ -437,7 +429,39 @@
 
 - (BOOL)containsPoint:(CGPoint)thePoint
 {
-    return CGPathContainsPoint(shapeLayer.path, nil, thePoint, [shapeLayer.fillRule isEqualToString:kCAFillRuleEvenOdd]);
+    BOOL containsPoint = NO;
+
+    if ([self.fillColor isEqual:[UIColor clearColor]])
+    {
+        // if shape is not filled with a color, do a simple "point on path" test
+        //
+        if (self.additionalTouchPadding)
+        {
+            CGPathRef tapTargetPath = CGPathCreateCopyByStrokingPath(shapeLayer.path, nil, fmaxf(self.additionalTouchPadding, shapeLayer.lineWidth), 0, 0, 0);
+
+            if (tapTargetPath)
+            {
+                containsPoint = [[UIBezierPath bezierPathWithCGPath:tapTargetPath] containsPoint:thePoint];
+
+                CGPathRelease(tapTargetPath);
+            }
+        }
+        else
+        {
+            UIGraphicsBeginImageContext(self.bounds.size);
+            CGContextAddPath(UIGraphicsGetCurrentContext(), shapeLayer.path);
+            containsPoint = CGContextPathContainsPoint(UIGraphicsGetCurrentContext(), thePoint, kCGPathStroke);
+            UIGraphicsEndImageContext();
+        }
+    }
+    else
+    {
+        // else do a "path contains point" test
+        //
+        containsPoint = CGPathContainsPoint(shapeLayer.path, nil, thePoint, [shapeLayer.fillRule isEqualToString:kCAFillRuleEvenOdd]);
+    }
+
+    return containsPoint;
 }
 
 - (void)closePath
@@ -509,6 +533,18 @@
     }
 }
 
+- (void)setFillPatternImage:(UIImage *)fillPatternImage
+{
+    if (fillPatternImage)
+        self.fillColor = nil;
+
+    if (_fillPatternImage != fillPatternImage)
+    {
+        _fillPatternImage = fillPatternImage;
+        [self recalculateGeometryAnimated:NO];
+    }
+}
+
 - (CGFloat)shadowBlur
 {
     return shapeLayer.shadowRadius;
@@ -573,8 +609,11 @@
 
 - (void)setAnnotation:(RMAnnotation *)newAnnotation
 {
-    super.annotation = newAnnotation;
-    [self recalculateGeometryAnimated:NO];
+    if (newAnnotation)
+    {
+        super.annotation = newAnnotation;
+        [self recalculateGeometryAnimated:NO];
+    }
 }
 
 @end

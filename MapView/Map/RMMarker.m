@@ -26,7 +26,9 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #import "RMMarker.h"
+
 #import "RMPixel.h"
+#import "RMConfiguration.h"
 
 @implementation RMMarker
 
@@ -35,6 +37,8 @@
 @synthesize textBackgroundColor;
 
 #define defaultMarkerAnchorPoint CGPointMake(0.5, 0.5)
+
+#define kCachesPath [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
 + (UIFont *)defaultFont
 {
@@ -75,12 +79,95 @@
     return self;
 }
 
-- (void)dealloc
+- (id)initWithMapboxMarkerImage
 {
-    self.label = nil;
-    self.textForegroundColor = nil;
-    self.textBackgroundColor = nil;
-    [super dealloc];
+    return [self initWithMapboxMarkerImage:nil tintColor:nil size:RMMarkerMapboxImageSizeMedium];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName
+{
+    return [self initWithMapboxMarkerImage:symbolName tintColor:nil size:RMMarkerMapboxImageSizeMedium];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color
+{
+    return [self initWithMapboxMarkerImage:symbolName tintColor:color size:RMMarkerMapboxImageSizeMedium];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color size:(RMMarkerMapboxImageSize)size
+{
+    NSString *sizeString = nil;
+    
+    switch (size)
+    {
+        case RMMarkerMapboxImageSizeSmall:
+            sizeString = @"small";
+            break;
+        
+        case RMMarkerMapboxImageSizeMedium:
+        default:
+            sizeString = @"medium";
+            break;
+        
+        case RMMarkerMapboxImageSizeLarge:
+            sizeString = @"large";
+            break;
+    }
+    
+    NSString *colorHex = nil;
+    
+    if (color)
+    {
+        CGFloat white, red, green, blue, alpha;
+
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha])
+        {
+            colorHex = [NSString stringWithFormat:@"%02lx%02lx%02lx", (unsigned long)(red * 255), (unsigned long)(green * 255), (unsigned long)(blue * 255)];
+        }
+        else if ([color getWhite:&white alpha:&alpha])
+        {
+            colorHex = [NSString stringWithFormat:@"%02lx%02lx%02lx", (unsigned long)(white * 255), (unsigned long)(white * 255), (unsigned long)(white * 255)];
+        }
+    }
+    
+    return [self initWithMapboxMarkerImage:symbolName tintColorHex:colorHex sizeString:sizeString];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex
+{
+    return [self initWithMapboxMarkerImage:symbolName tintColorHex:colorHex sizeString:@"medium"];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex sizeString:(NSString *)sizeString
+{
+    NSAssert([[[RMConfiguration sharedInstance] accessToken] length], @"an access token is required to use Mapbox markers");
+
+    BOOL useRetina = ([[UIScreen mainScreen] scale] > 1.0);
+
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.tiles.mapbox.com/v4/marker/pin-%@%@%@%@.png%@",
+                                               (sizeString ? [sizeString substringToIndex:1] : @"m"),
+                                               (symbolName ? [@"-" stringByAppendingString:symbolName] : @""),
+                                               (colorHex   ? [@"+" stringByAppendingString:[colorHex stringByReplacingOccurrencesOfString:@"#" withString:@""]] : @"+ff0000"),
+                                               (useRetina  ? @"@2x" : @""),
+                                               [@"?access_token=" stringByAppendingString:[[RMConfiguration sharedInstance] accessToken]]]];
+
+    UIImage *image = nil;
+    
+    NSString *cachePath = [NSString stringWithFormat:@"%@/%@", kCachesPath, [imageURL lastPathComponent]];
+    
+    if ((image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cachePath] scale:(useRetina ? 2.0 : 1.0)]) && image)
+        return [self initWithUIImage:image];
+    
+    [[NSFileManager defaultManager] createFileAtPath:cachePath contents:[NSData brandedDataWithContentsOfURL:imageURL] attributes:nil];
+    
+    return [self initWithUIImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:cachePath] scale:(useRetina ? 2.0 : 1.0)]];
+}
+
++ (void)clearCachedMapboxMarkers
+{
+    for (NSString *filePath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:kCachesPath error:nil])
+        if ([[filePath lastPathComponent] hasPrefix:@"pin-"] && [[filePath lastPathComponent] hasSuffix:@".png"])
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", kCachesPath, filePath] error:nil];
 }
 
 #pragma mark -
@@ -105,30 +192,25 @@
         return;
 
     if (label != nil)
-    {
         [[label layer] removeFromSuperlayer];
-        [label release]; label = nil;
-    }
 
     if (aView != nil)
     {
-        label = [aView retain];
+        label = aView;
         [self addSublayer:[label layer]];
     }
 }
 
 - (void)setTextBackgroundColor:(UIColor *)newTextBackgroundColor
 {
-    [textBackgroundColor autorelease];
-    textBackgroundColor = [newTextBackgroundColor retain];
+    textBackgroundColor = newTextBackgroundColor;
 
     self.label.backgroundColor = textBackgroundColor;
 }
 
 - (void)setTextForegroundColor:(UIColor *)newTextForegroundColor
 {
-    [textForegroundColor autorelease];
-    textForegroundColor = [newTextForegroundColor retain];
+    textForegroundColor = newTextForegroundColor;
 
     if ([self.label respondsToSelector:@selector(setTextColor:)])
         ((UILabel *)self.label).textColor = textForegroundColor;
@@ -170,7 +252,6 @@
     [aLabel setText:text];
 
     [self setLabel:aLabel];
-    [aLabel release];
 }
 
 - (void)toggleLabel
@@ -201,6 +282,44 @@
         // Using removeFromSuperlayer will animate hiding the label, whereas setHidden is not animated
         [[self.label layer] removeFromSuperlayer];
         [self.label setHidden:YES];
+    }
+}
+
+- (void)setDragState:(RMMapLayerDragState)dragState animated:(BOOL)animated
+{
+    if (dragState == RMMapLayerDragStateStarting)
+    {
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:(animated ? 0.3 : 0)];
+
+        self.opacity -= 0.1;
+        self.transform = CATransform3DScale(self.transform, 1.3, 1.3, 1.0);
+
+        [CATransaction setCompletionBlock:^(void)
+        {
+            [super setDragState:RMMapLayerDragStateDragging animated:animated];
+        }];
+
+        [CATransaction commit];
+    }
+    else if (dragState == RMMapLayerDragStateCanceling || dragState == RMMapLayerDragStateEnding)
+    {
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:(animated ? 0.3 : 0)];
+
+        self.opacity += 0.1;
+        self.transform = CATransform3DScale(self.transform, 1.0/1.3, 1.0/1.3, 1.0);
+
+        [CATransaction setCompletionBlock:^(void)
+        {
+             [super setDragState:RMMapLayerDragStateNone animated:animated];
+        }];
+
+        [CATransaction commit];
+    }
+    else
+    {
+        [super setDragState:dragState animated:animated];
     }
 }
 

@@ -26,15 +26,13 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #import "RMAbstractWebMapSource.h"
+
 #import "RMTileCache.h"
+#import "RMConfiguration.h"
 
 #define HTTP_404_NOT_FOUND 404
 
 @implementation RMAbstractWebMapSource
-{
-    NSMutableSet *activeDownloadsTileHashes;
-    NSCondition *activeDownloadsCondition;
-}
 
 @synthesize retryCount, requestTimeoutSeconds;
 
@@ -46,17 +44,7 @@
     self.retryCount = RMAbstractWebMapSourceDefaultRetryCount;
     self.requestTimeoutSeconds = RMAbstractWebMapSourceDefaultWaitSeconds;
 
-    activeDownloadsTileHashes = [NSMutableSet new];
-    activeDownloadsCondition = [NSCondition new];
-
     return self;
-}
-
-- (void)dealloc
-{
-    [activeDownloadsTileHashes release]; activeDownloadsTileHashes = nil;
-    [activeDownloadsCondition release]; activeDownloadsCondition = nil;
-    [super dealloc];
 }
 
 - (NSURL *)URLForTile:(RMTile)tile
@@ -95,36 +83,13 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:RMTileRequested object:[NSNumber numberWithUnsignedLongLong:RMTileKey(tile)]];
     });
 
-    [tileCache retain];
-
-    // Prevent double downloads
-    NSNumber *tileHash = [NSNumber numberWithUnsignedLongLong:RMTileKey(tile)];
-
-    [activeDownloadsCondition lock];
-
-    while ([activeDownloadsTileHashes containsObject:tileHash])
-        [activeDownloadsCondition wait];
-
-    if (self.isCacheable)
-    {
-        image = [tileCache cachedImage:tile withCacheKey:[self uniqueTilecacheKey]];
-
-        if (image)
-        {
-            [activeDownloadsCondition unlock];
-            [tileCache release];
-
-            return image;
-        }
-    }
-
-    [activeDownloadsTileHashes addObject:tileHash];
-    [activeDownloadsCondition unlock];
-
-    // Load the tiles
     NSArray *URLs = [self URLsForTile:tile];
 
-    if ([URLs count] > 1)
+    if ([URLs count] == 0)
+    {
+        return nil;
+    }
+    else if ([URLs count] > 1)
     {
         // fill up collection array with placeholders
         //
@@ -146,8 +111,9 @@
                 for (NSUInteger try = 0; tileData == nil && try < self.retryCount; ++try)
                 {
                     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:currentURL];
+                    [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
                     [request setTimeoutInterval:(self.requestTimeoutSeconds / (CGFloat)self.retryCount)];
-                    tileData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+                    tileData = [NSURLConnection sendBrandedSynchronousRequest:request returningResponse:nil error:nil];
                 }
 
                 if (tileData)
@@ -165,7 +131,9 @@
         // wait for whole group of fetches (with retries) to finish, then clean up
         //
         dispatch_group_wait(fetchGroup, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * self.requestTimeoutSeconds));
+#if ! OS_OBJECT_USE_OBJC
         dispatch_release(fetchGroup);
+#endif
 
         // composite the collected images together
         //
@@ -195,8 +163,9 @@
         {
             NSHTTPURLResponse *response = nil;
             NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[URLs objectAtIndex:0]];
+            [request setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
             [request setTimeoutInterval:(self.requestTimeoutSeconds / (CGFloat)self.retryCount)];
-            image = [UIImage imageWithData:[NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil]];
+            image = [UIImage imageWithData:[NSURLConnection sendBrandedSynchronousRequest:request returningResponse:&response error:nil]];
 
             if (response.statusCode == HTTP_404_NOT_FOUND)
                 break;
@@ -205,13 +174,6 @@
 
     if (image && self.isCacheable)
         [tileCache addImage:image forTile:tile withCacheKey:[self uniqueTilecacheKey]];
-
-    [activeDownloadsCondition lock];
-    [activeDownloadsTileHashes removeObject:tileHash];
-    [activeDownloadsCondition signal];
-    [activeDownloadsCondition unlock];
-
-    [tileCache release];
 
     dispatch_async(dispatch_get_main_queue(), ^(void)
     {
