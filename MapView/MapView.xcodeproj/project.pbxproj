@@ -332,6 +332,19 @@
 		444FEC1B17A5BF7100F3798C /* RMWMS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWMS.m; sourceTree = "<group>"; };
 		444FEC1C17A5BF7100F3798C /* RMWMSSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWMSSource.h; sourceTree = "<group>"; };
 		444FEC1D17A5BF7100F3798C /* RMWMSSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWMSSource.m; sourceTree = "<group>"; };
+		55108D691B76088E00D41B53 /* SMCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SMCalloutView.h; sourceTree = "<group>"; };
+		55108D6A1B76088E00D41B53 /* SMCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SMCalloutView.m; sourceTree = "<group>"; };
+		55108D771B7608C000D41B53 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		55108D781B7608C000D41B53 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		55108D791B7608C000D41B53 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		55108D7A1B7608C000D41B53 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		55108D7B1B7608C000D41B53 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabasePool.h; sourceTree = "<group>"; };
+		55108D7C1B7608C000D41B53 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabasePool.m; sourceTree = "<group>"; };
+		55108D7D1B7608C000D41B53 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseQueue.h; sourceTree = "<group>"; };
+		55108D7E1B7608C000D41B53 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseQueue.m; sourceTree = "<group>"; };
+		55108D7F1B7608C000D41B53 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDB.h; sourceTree = "<group>"; };
+		55108D801B7608C000D41B53 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		55108D811B7608C000D41B53 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
 		55A3DC2C19FAA5E3002213BA /* aasincos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = aasincos.c; path = ../Proj4/aasincos.c; sourceTree = "<group>"; };
 		55A3DC2D19FAA5E3002213BA /* adjlon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adjlon.c; path = ../Proj4/adjlon.c; sourceTree = "<group>"; };
 		55A3DC2E19FAA5E3002213BA /* bch2bps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bch2bps.c; path = ../Proj4/bch2bps.c; sourceTree = "<group>"; };
@@ -647,6 +660,35 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		55108D5A1B76088E00D41B53 /* SMCalloutView */ = {
+			isa = PBXGroup;
+			children = (
+				55108D691B76088E00D41B53 /* SMCalloutView.h */,
+				55108D6A1B76088E00D41B53 /* SMCalloutView.m */,
+			);
+			name = SMCalloutView;
+			path = Map/SMCalloutView;
+			sourceTree = "<group>";
+		};
+		55108D761B7608C000D41B53 /* fmdb */ = {
+			isa = PBXGroup;
+			children = (
+				55108D771B7608C000D41B53 /* FMDatabase.h */,
+				55108D781B7608C000D41B53 /* FMDatabase.m */,
+				55108D791B7608C000D41B53 /* FMDatabaseAdditions.h */,
+				55108D7A1B7608C000D41B53 /* FMDatabaseAdditions.m */,
+				55108D7B1B7608C000D41B53 /* FMDatabasePool.h */,
+				55108D7C1B7608C000D41B53 /* FMDatabasePool.m */,
+				55108D7D1B7608C000D41B53 /* FMDatabaseQueue.h */,
+				55108D7E1B7608C000D41B53 /* FMDatabaseQueue.m */,
+				55108D7F1B7608C000D41B53 /* FMDB.h */,
+				55108D801B7608C000D41B53 /* FMResultSet.h */,
+				55108D811B7608C000D41B53 /* FMResultSet.m */,
+			);
+			name = fmdb;
+			path = Map/FMDB/src/fmdb;
+			sourceTree = "<group>";
+		};
 		B83E64CE0E80E73F001663B6 /* Tile & Overlay Rendering */ = {
 			isa = PBXGroup;
 			children = (
@@ -804,6 +846,8 @@
 		DD932BC2165C294100D69D49 /* Externals */ = {
 			isa = PBXGroup;
 			children = (
+				55108D761B7608C000D41B53 /* fmdb */,
+				55108D5A1B76088E00D41B53 /* SMCalloutView */,
 				DDDFF7FE165D5BA200A9D877 /* Proj4 */,
 			);
 			name = Externals;
