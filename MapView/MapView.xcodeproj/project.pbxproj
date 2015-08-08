@@ -51,22 +51,6 @@
 		444FEC1F17A5BF7100F3798C /* RMWMS.m in Sources */ = {isa = PBXBuildFile; fileRef = 444FEC1B17A5BF7100F3798C /* RMWMS.m */; };
 		444FEC2017A5BF7100F3798C /* RMWMSSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 444FEC1C17A5BF7100F3798C /* RMWMSSource.h */; };
 		444FEC2117A5BF7100F3798C /* RMWMSSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 444FEC1D17A5BF7100F3798C /* RMWMSSource.m */; };
-		5516D8F91AF9A15400FFEC00 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8EE1AF9A15400FFEC00 /* FMDatabase.h */; };
-		5516D8FA1AF9A15400FFEC00 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D8EF1AF9A15400FFEC00 /* FMDatabase.m */; };
-		5516D8FB1AF9A15400FFEC00 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8F01AF9A15400FFEC00 /* FMDatabaseAdditions.h */; };
-		5516D8FC1AF9A15400FFEC00 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D8F11AF9A15400FFEC00 /* FMDatabaseAdditions.m */; };
-		5516D8FD1AF9A15400FFEC00 /* FMDatabasePool.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8F21AF9A15400FFEC00 /* FMDatabasePool.h */; };
-		5516D8FE1AF9A15400FFEC00 /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D8F31AF9A15400FFEC00 /* FMDatabasePool.m */; };
-		5516D8FF1AF9A15400FFEC00 /* FMDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8F41AF9A15400FFEC00 /* FMDatabaseQueue.h */; };
-		5516D9001AF9A15400FFEC00 /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D8F51AF9A15400FFEC00 /* FMDatabaseQueue.m */; };
-		5516D9011AF9A15400FFEC00 /* FMDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8F61AF9A15400FFEC00 /* FMDB.h */; };
-		5516D9021AF9A15400FFEC00 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D8F71AF9A15400FFEC00 /* FMResultSet.h */; };
-		5516D9031AF9A15400FFEC00 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D8F81AF9A15400FFEC00 /* FMResultSet.m */; };
-		5516D9091AF9A16900FFEC00 /* FMDatabase+FTS3.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D9041AF9A16900FFEC00 /* FMDatabase+FTS3.h */; };
-		5516D90A1AF9A16900FFEC00 /* FMDatabase+FTS3.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D9051AF9A16900FFEC00 /* FMDatabase+FTS3.m */; };
-		5516D90B1AF9A16900FFEC00 /* FMTokenizers.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D9061AF9A16900FFEC00 /* FMTokenizers.h */; };
-		5516D90C1AF9A16900FFEC00 /* FMTokenizers.m in Sources */ = {isa = PBXBuildFile; fileRef = 5516D9071AF9A16900FFEC00 /* FMTokenizers.m */; };
-		5516D90D1AF9A16900FFEC00 /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 5516D9081AF9A16900FFEC00 /* fts3_tokenizer.h */; };
 		55A3DCCD19FAA5E3002213BA /* aasincos.c in Sources */ = {isa = PBXBuildFile; fileRef = 55A3DC2C19FAA5E3002213BA /* aasincos.c */; };
 		55A3DCCE19FAA5E3002213BA /* adjlon.c in Sources */ = {isa = PBXBuildFile; fileRef = 55A3DC2D19FAA5E3002213BA /* adjlon.c */; };
 		55A3DCCF19FAA5E3002213BA /* bch2bps.c in Sources */ = {isa = PBXBuildFile; fileRef = 55A3DC2E19FAA5E3002213BA /* bch2bps.c */; };
@@ -260,8 +244,6 @@
 		B8F3FC650EA2E792004D8F85 /* RMMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = B8F3FC630EA2E792004D8F85 /* RMMarker.m */; };
 		D1437B36122869E400888DAE /* RMDBMapSource.m in Sources */ = {isa = PBXBuildFile; fileRef = D1437B32122869E400888DAE /* RMDBMapSource.m */; };
 		D1437B37122869E400888DAE /* RMDBMapSource.h in Headers */ = {isa = PBXBuildFile; fileRef = D1437B33122869E400888DAE /* RMDBMapSource.h */; };
-		DD1E3C6E161F954F004FC649 /* SMCalloutView.h in Headers */ = {isa = PBXBuildFile; fileRef = DD1E3C6C161F954F004FC649 /* SMCalloutView.h */; };
-		DD1E3C6F161F954F004FC649 /* SMCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = DD1E3C6D161F954F004FC649 /* SMCalloutView.m */; };
 		DD4195C9162356900049E6BA /* RMBingSource.h in Headers */ = {isa = PBXBuildFile; fileRef = DD4195C7162356900049E6BA /* RMBingSource.h */; };
 		DD4195CA162356900049E6BA /* RMBingSource.m in Sources */ = {isa = PBXBuildFile; fileRef = DD4195C8162356900049E6BA /* RMBingSource.m */; };
 		DD41960116250ED40049E6BA /* RMTileCacheDownloadOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = DD4195FF16250ED40049E6BA /* RMTileCacheDownloadOperation.h */; };
@@ -350,22 +332,6 @@
 		444FEC1B17A5BF7100F3798C /* RMWMS.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWMS.m; sourceTree = "<group>"; };
 		444FEC1C17A5BF7100F3798C /* RMWMSSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMWMSSource.h; sourceTree = "<group>"; };
 		444FEC1D17A5BF7100F3798C /* RMWMSSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMWMSSource.m; sourceTree = "<group>"; };
-		5516D8EE1AF9A15400FFEC00 /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabase.h; path = fmdb/FMDatabase.h; sourceTree = "<group>"; };
-		5516D8EF1AF9A15400FFEC00 /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabase.m; path = fmdb/FMDatabase.m; sourceTree = "<group>"; };
-		5516D8F01AF9A15400FFEC00 /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseAdditions.h; path = fmdb/FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		5516D8F11AF9A15400FFEC00 /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseAdditions.m; path = fmdb/FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		5516D8F21AF9A15400FFEC00 /* FMDatabasePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabasePool.h; path = fmdb/FMDatabasePool.h; sourceTree = "<group>"; };
-		5516D8F31AF9A15400FFEC00 /* FMDatabasePool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabasePool.m; path = fmdb/FMDatabasePool.m; sourceTree = "<group>"; };
-		5516D8F41AF9A15400FFEC00 /* FMDatabaseQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDatabaseQueue.h; path = fmdb/FMDatabaseQueue.h; sourceTree = "<group>"; };
-		5516D8F51AF9A15400FFEC00 /* FMDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMDatabaseQueue.m; path = fmdb/FMDatabaseQueue.m; sourceTree = "<group>"; };
-		5516D8F61AF9A15400FFEC00 /* FMDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMDB.h; path = fmdb/FMDB.h; sourceTree = "<group>"; };
-		5516D8F71AF9A15400FFEC00 /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMResultSet.h; path = fmdb/FMResultSet.h; sourceTree = "<group>"; };
-		5516D8F81AF9A15400FFEC00 /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMResultSet.m; path = fmdb/FMResultSet.m; sourceTree = "<group>"; };
-		5516D9041AF9A16900FFEC00 /* FMDatabase+FTS3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMDatabase+FTS3.h"; path = "extra/fts3/FMDatabase+FTS3.h"; sourceTree = "<group>"; };
-		5516D9051AF9A16900FFEC00 /* FMDatabase+FTS3.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMDatabase+FTS3.m"; path = "extra/fts3/FMDatabase+FTS3.m"; sourceTree = "<group>"; };
-		5516D9061AF9A16900FFEC00 /* FMTokenizers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMTokenizers.h; path = extra/fts3/FMTokenizers.h; sourceTree = "<group>"; };
-		5516D9071AF9A16900FFEC00 /* FMTokenizers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FMTokenizers.m; path = extra/fts3/FMTokenizers.m; sourceTree = "<group>"; };
-		5516D9081AF9A16900FFEC00 /* fts3_tokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fts3_tokenizer.h; path = extra/fts3/fts3_tokenizer.h; sourceTree = "<group>"; };
 		55A3DC2C19FAA5E3002213BA /* aasincos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = aasincos.c; path = ../Proj4/aasincos.c; sourceTree = "<group>"; };
 		55A3DC2D19FAA5E3002213BA /* adjlon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adjlon.c; path = ../Proj4/adjlon.c; sourceTree = "<group>"; };
 		55A3DC2E19FAA5E3002213BA /* bch2bps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bch2bps.c; path = ../Proj4/bch2bps.c; sourceTree = "<group>"; };
@@ -560,8 +526,6 @@
 		B8F3FC630EA2E792004D8F85 /* RMMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMarker.m; sourceTree = "<group>"; };
 		D1437B32122869E400888DAE /* RMDBMapSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDBMapSource.m; sourceTree = "<group>"; };
 		D1437B33122869E400888DAE /* RMDBMapSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDBMapSource.h; sourceTree = "<group>"; };
-		DD1E3C6C161F954F004FC649 /* SMCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMCalloutView.h; path = SMCalloutView/SMCalloutView.h; sourceTree = "<group>"; };
-		DD1E3C6D161F954F004FC649 /* SMCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMCalloutView.m; path = SMCalloutView/SMCalloutView.m; sourceTree = "<group>"; };
 		DD4195C7162356900049E6BA /* RMBingSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMBingSource.h; sourceTree = "<group>"; };
 		DD4195C8162356900049E6BA /* RMBingSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMBingSource.m; sourceTree = "<group>"; };
 		DD4195FF16250ED40049E6BA /* RMTileCacheDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMTileCacheDownloadOperation.h; sourceTree = "<group>"; };
@@ -743,30 +707,6 @@
 			name = "Tile Sources";
 			sourceTree = "<group>";
 		};
-		B8474B8C0EB40094006A0BC1 /* FMDB */ = {
-			isa = PBXGroup;
-			children = (
-				5516D9041AF9A16900FFEC00 /* FMDatabase+FTS3.h */,
-				5516D9051AF9A16900FFEC00 /* FMDatabase+FTS3.m */,
-				5516D9061AF9A16900FFEC00 /* FMTokenizers.h */,
-				5516D9071AF9A16900FFEC00 /* FMTokenizers.m */,
-				5516D9081AF9A16900FFEC00 /* fts3_tokenizer.h */,
-				5516D8EE1AF9A15400FFEC00 /* FMDatabase.h */,
-				5516D8EF1AF9A15400FFEC00 /* FMDatabase.m */,
-				5516D8F01AF9A15400FFEC00 /* FMDatabaseAdditions.h */,
-				5516D8F11AF9A15400FFEC00 /* FMDatabaseAdditions.m */,
-				5516D8F21AF9A15400FFEC00 /* FMDatabasePool.h */,
-				5516D8F31AF9A15400FFEC00 /* FMDatabasePool.m */,
-				5516D8F41AF9A15400FFEC00 /* FMDatabaseQueue.h */,
-				5516D8F51AF9A15400FFEC00 /* FMDatabaseQueue.m */,
-				5516D8F61AF9A15400FFEC00 /* FMDB.h */,
-				5516D8F71AF9A15400FFEC00 /* FMResultSet.h */,
-				5516D8F81AF9A15400FFEC00 /* FMResultSet.m */,
-			);
-			name = FMDB;
-			path = Map/FMDB/src;
-			sourceTree = "<group>";
-		};
 		B86F26A80E8742ED007A3773 /* Annotation Layers */ = {
 			isa = PBXGroup;
 			children = (
@@ -819,16 +759,6 @@
 			name = "Coordinate Systems";
 			sourceTree = "<group>";
 		};
-		DD76E12E161E347B00F60F43 /* SMCallout */ = {
-			isa = PBXGroup;
-			children = (
-				DD1E3C6C161F954F004FC649 /* SMCalloutView.h */,
-				DD1E3C6D161F954F004FC649 /* SMCalloutView.m */,
-			);
-			name = SMCallout;
-			path = Map;
-			sourceTree = "<group>";
-		};
 		DD8FD7571559ED930044D96F /* User Location */ = {
 			isa = PBXGroup;
 			children = (
@@ -874,9 +804,7 @@
 		DD932BC2165C294100D69D49 /* Externals */ = {
 			isa = PBXGroup;
 			children = (
-				B8474B8C0EB40094006A0BC1 /* FMDB */,
 				DDDFF7FE165D5BA200A9D877 /* Proj4 */,
-				DD76E12E161E347B00F60F43 /* SMCallout */,
 			);
 			name = Externals;
 			sourceTree = "<group>";
@@ -1060,24 +988,18 @@
 				B8C974220E8A19B2007D16AD /* RMProjection.h in Headers */,
 				B8C974230E8A19B2007D16AD /* RMTileCache.h in Headers */,
 				B8C974260E8A19B2007D16AD /* RMTile.h in Headers */,
-				5516D8FB1AF9A15400FFEC00 /* FMDatabaseAdditions.h in Headers */,
 				B8C974270E8A19B2007D16AD /* RMPixel.h in Headers */,
 				B8C9742A0E8A19B2007D16AD /* RMTileImage.h in Headers */,
 				B8C9742B0E8A19B2007D16AD /* RMMemoryCache.h in Headers */,
 				B8C9742D0E8A19B2007D16AD /* RMFractalTileProjection.h in Headers */,
-				5516D90B1AF9A16900FFEC00 /* FMTokenizers.h in Headers */,
 				B8C9742F0E8A19B2007D16AD /* RMMapLayer.h in Headers */,
 				B8C974620E8A19E8007D16AD /* RMTileSource.h in Headers */,
-				5516D8F91AF9A15400FFEC00 /* FMDatabase.h in Headers */,
 				55A3DCE319FAA5E3002213BA /* nad_list.h in Headers */,
-				5516D90D1AF9A16900FFEC00 /* fts3_tokenizer.h in Headers */,
 				B8C9746B0E8A1A50007D16AD /* RMMapView.h in Headers */,
 				55A3DD6519FAA5E3002213BA /* proj_api.h in Headers */,
-				5516D9021AF9A15400FFEC00 /* FMResultSet.h in Headers */,
 				B8F3FC640EA2E792004D8F85 /* RMMarker.h in Headers */,
 				B8474BA40EB40094006A0BC1 /* RMDatabaseCache.h in Headers */,
 				23A0AAEB0EB90AA6003A4521 /* RMFoundation.h in Headers */,
-				5516D8FF1AF9A15400FFEC00 /* FMDatabaseQueue.h in Headers */,
 				B8800FF20EC3A239003E9CDD /* RMMapViewDelegate.h in Headers */,
 				B8800FF30EC3A23D003E9CDD /* RMConfiguration.h in Headers */,
 				96492C400FA8AD3400EBA6D2 /* RMGlobalConstants.h in Headers */,
@@ -1107,18 +1029,14 @@
 				16F98C961590CFF000FF90CE /* RMShape.h in Headers */,
 				55A3DD2619FAA5E3002213BA /* pj_list.h in Headers */,
 				16FBF07615936BF1004ECAD1 /* RMTileSourcesContainer.h in Headers */,
-				5516D9091AF9A16900FFEC00 /* FMDatabase+FTS3.h in Headers */,
 				161E563A1594664E00B00BB6 /* RMOpenSeaMapLayer.h in Headers */,
 				1656665515A1DF7900EF3DC7 /* RMCoordinateGridSource.h in Headers */,
-				5516D8FD1AF9A15400FFEC00 /* FMDatabasePool.h in Headers */,
 				55A3DD6B19FAA5E3002213BA /* projects.h in Headers */,
 				16E5A63A15E531F200C92A5A /* RMCompositeSource.h in Headers */,
 				DD5FA1EB15E2B020004EB6C5 /* RMLoadingTileView.h in Headers */,
 				DD41960116250ED40049E6BA /* RMTileCacheDownloadOperation.h in Headers */,
 				55A3DCD519FAA5E3002213BA /* emess.h in Headers */,
-				5516D9011AF9A15400FFEC00 /* FMDB.h in Headers */,
 				DD4195C9162356900049E6BA /* RMBingSource.h in Headers */,
-				DD1E3C6E161F954F004FC649 /* SMCalloutView.h in Headers */,
 				55A3DD6619FAA5E3002213BA /* proj_config.h in Headers */,
 				DD6B651B16A9ECD8007D1CBA /* MapView_Prefix.pch in Headers */,
 				444FEC1E17A5BF7100F3798C /* RMWMS.h in Headers */,
@@ -1264,7 +1182,6 @@
 				B8C9744A0E8A19B2007D16AD /* RMProjection.m in Sources */,
 				55A3DD4719FAA5E3002213BA /* PJ_putp6.c in Sources */,
 				55A3DCEC19FAA5E3002213BA /* pj_apply_gridshift.c in Sources */,
-				5516D8FA1AF9A15400FFEC00 /* FMDatabase.m in Sources */,
 				55A3DD5519FAA5E3002213BA /* PJ_tpeqd.c in Sources */,
 				55A3DD2419FAA5E3002213BA /* PJ_lcca.c in Sources */,
 				55A3DD3919FAA5E3002213BA /* PJ_ob_tran.c in Sources */,
@@ -1276,7 +1193,6 @@
 				55A3DD1119FAA5E3002213BA /* PJ_gnom.c in Sources */,
 				55A3DCFF19FAA5E3002213BA /* PJ_eck3.c in Sources */,
 				B8F3FC650EA2E792004D8F85 /* RMMarker.m in Sources */,
-				5516D9001AF9A15400FFEC00 /* FMDatabaseQueue.m in Sources */,
 				55A3DCFB19FAA5E3002213BA /* PJ_denoy.c in Sources */,
 				B8474BA50EB40094006A0BC1 /* RMDatabaseCache.m in Sources */,
 				55A3DD3B19FAA5E3002213BA /* PJ_oea.c in Sources */,
@@ -1284,7 +1200,6 @@
 				55A3DD3F19FAA5E3002213BA /* pj_param.c in Sources */,
 				55A3DD5019FAA5E3002213BA /* pj_strerrno.c in Sources */,
 				126693040EB76C0B00E002D5 /* RMConfiguration.m in Sources */,
-				5516D90A1AF9A16900FFEC00 /* FMDatabase+FTS3.m in Sources */,
 				55A3DD1D19FAA5E3002213BA /* PJ_labrd.c in Sources */,
 				55A3DD0E19FAA5E3002213BA /* PJ_geos.c in Sources */,
 				55A3DD6319FAA5E3002213BA /* PJ_wink2.c in Sources */,
@@ -1313,11 +1228,9 @@
 				55A3DD1019FAA5E3002213BA /* PJ_gn_sinu.c in Sources */,
 				55A3DD3819FAA5E3002213BA /* PJ_nzmg.c in Sources */,
 				55A3DD5919FAA5E3002213BA /* PJ_urm5.c in Sources */,
-				5516D90C1AF9A16900FFEC00 /* FMTokenizers.m in Sources */,
 				55A3DCF919FAA5E3002213BA /* pj_datum_set.c in Sources */,
 				55A3DD5819FAA5E3002213BA /* pj_units.c in Sources */,
 				55A3DD2319FAA5E3002213BA /* PJ_lcc.c in Sources */,
-				5516D9031AF9A15400FFEC00 /* FMResultSet.m in Sources */,
 				55A3DD6019FAA5E3002213BA /* PJ_wag3.c in Sources */,
 				16FAB66513E03D55002F4E1C /* RMQuadTree.m in Sources */,
 				55A3DD0B19FAA5E3002213BA /* PJ_gall.c in Sources */,
@@ -1331,7 +1244,6 @@
 				55A3DCF819FAA5E3002213BA /* PJ_crast.c in Sources */,
 				16128CF6148D295300C23C0E /* RMOpenSeaMapSource.m in Sources */,
 				55A3DD2719FAA5E3002213BA /* PJ_loxim.c in Sources */,
-				5516D8FE1AF9A15400FFEC00 /* FMDatabasePool.m in Sources */,
 				55A3DD3019FAA5E3002213BA /* PJ_mod_ster.c in Sources */,
 				55A3DCE119FAA5E3002213BA /* nad_init.c in Sources */,
 				55A3DD2219FAA5E3002213BA /* pj_latlong.c in Sources */,
@@ -1383,7 +1295,6 @@
 				55A3DD2119FAA5E3002213BA /* PJ_lask.c in Sources */,
 				55A3DD6D19FAA5E3002213BA /* vector1.c in Sources */,
 				55A3DCD319FAA5E3002213BA /* dmstor.c in Sources */,
-				5516D8FC1AF9A15400FFEC00 /* FMDatabaseAdditions.m in Sources */,
 				55A3DCF519FAA5E3002213BA /* PJ_cea.c in Sources */,
 				55A3DD1819FAA5E3002213BA /* PJ_imw_p.c in Sources */,
 				161E563B1594664E00B00BB6 /* RMOpenSeaMapLayer.m in Sources */,
@@ -1398,7 +1309,6 @@
 				55A3DD6119FAA5E3002213BA /* PJ_wag7.c in Sources */,
 				55A3DCE019FAA5E3002213BA /* nad_cvt.c in Sources */,
 				DD4195CA162356900049E6BA /* RMBingSource.m in Sources */,
-				DD1E3C6F161F954F004FC649 /* SMCalloutView.m in Sources */,
 				55A3DD1719FAA5E3002213BA /* PJ_hatano.c in Sources */,
 				55A3DD5C19FAA5E3002213BA /* PJ_vandg.c in Sources */,
 				444FEC1F17A5BF7100F3798C /* RMWMS.m in Sources */,
