@@ -1,0 +1,71 @@
+---
+date: 0200-01-14
+category: examples
+layout: examples
+title: Converting points
+rotation: vertical
+description: Converting points between screen- and map-based coordinates.
+tags:
+  - shape
+  - polyline
+  - polygon
+  - draw
+  - points
+  - convert
+  - projection
+  - CGPoint
+---
+@implementation MyViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    [[RMConfiguration sharedInstance] setAccessToken:@"<access token>"];
+
+    RMMapboxSource *tileSource = [[RMMapboxSource alloc] initWithMapID:@"mapbox.streets"];
+
+    RMMapView *mapView = [[RMMapView alloc] initWithFrame:self.view.bounds
+                                            andTilesource:tileSource];
+
+    // you will need to add a <RMMapViewDelegate> to the ViewController.h file
+    mapView.delegate = self;
+
+    [self.view addSubview:mapView];
+
+    RMAnnotation *annotation = [[RMAnnotation alloc] initWithMapView:mapView
+                                                          coordinate:mapView.centerCoordinate
+                                                            andTitle:nil];
+
+    [mapView addAnnotation:annotation];
+}
+
+- (RMMapLayer *)mapView:(RMMapView *)mapView layerForAnnotation:(RMAnnotation *)annotation
+{
+    if (annotation.isUserLocationAnnotation)
+        return nil;
+
+    // style the line
+    RMShape *line = [[RMShape alloc] initWithView:mapView];
+
+    line.lineWidth = 7.0;
+
+    line.lineColor = [UIColor colorWithRed:.5 green:.466 blue:.733 alpha:1];
+
+    [line moveToCoordinate:mapView.centerCoordinate];
+
+    CGPoint centerScreenPoint = [mapView coordinateToPixel:mapView.centerCoordinate];
+
+    [line addLineToCoordinate:[mapView pixelToCoordinate:
+                               CGPointMake(centerScreenPoint.x + 150,
+                                           centerScreenPoint.y + 100)]];
+
+    return line;
+}
+
+- (void)singleTapOnMap:(RMMapView *)map at:(CGPoint)point
+{
+    NSLog(@"You tapped at %f, %f",
+          [map pixelToCoordinate:point].latitude,
+          [map pixelToCoordinate:point].longitude);
+}

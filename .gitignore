@@ -28,4 +28,8 @@ Icon?
 # Project-specific ignores
 Docs
 CocoaPods
+docset-installed.txt
+Docs/docset
+MapView
+Proj4
 _site

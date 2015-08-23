@@ -1,0 +1,34 @@
+---
+layout: pages
+category: examples
+---
+
+<div class='col12 round keyline-all clearfix contain fill-white'>
+<div class='pad2 keyline-bottom' data-swiftype-index=true>
+  <h3>{{page.title}}</h3>
+  <p>{{page.description}}</p>
+</div>
+
+<div class='pad4 fill-light clearfix center'>
+  <div class='device contain{% if page.device == 'white' %} device-white{% endif %}{% if page.rotation == 'vertical' %} device-phone-v{% else %} device-phone-h{% endif %}'>
+      <img src="{{site.baseurl}}/images{{page.url | replace:'examples/',''}}{% if page.type == 'gif' %}.gif{% else %}.png{% endif %}" />
+     <div class='device-details'></div>
+   </div>
+</div>
+
+<div id='code' class='fill-white'>
+{% if page.notes %}
+  <div class="prose pad2 keyline-bottom keyline-top fill-notes dark">
+  {{page.notes}}
+  </div>
+{% endif %}
+
+{% highlight objc %}
+#import "Mapbox.h"
+
+{{content}}
+
+@end
+{% endhighlight %}
+</div>
+</div>

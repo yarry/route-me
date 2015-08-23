@@ -1,0 +1,45 @@
+---
+date: 0200-01-03
+category: examples
+layout: examples
+title: Custom style
+description: Customize the style of a map.
+tags:
+  - custom
+  - style
+  - color
+  - tilemill
+  - studio
+---
+
+@interface ViewController ()
+@property (nonatomic, strong) RMMapView *mapView;
+@end
+
+@implementation MyViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    [[RMConfiguration sharedInstance] setAccessToken:@"<access token>"];
+
+    RMMapboxSource *tileSource = [[RMMapboxSource alloc] initWithMapID:@"mapbox.wheatpaste"];
+
+    // set coordinates
+    CLLocationCoordinate2D center = CLLocationCoordinate2DMake(38.910003, -77.015533);
+    self.mapView = [[RMMapView alloc] initWithFrame:self.view.bounds
+                                      andTilesource:tileSource];
+
+    // set zoom
+    self.mapView.zoom = 11;
+
+    // center the map to the coordinates
+    self.mapView.centerCoordinate = center;
+
+    [self.view addSubview:self.mapView];
+
+    // make map expand to fill screen when rotated
+    self.mapView.autoresizingMask = UIViewAutoresizingFlexibleHeight |
+    UIViewAutoresizingFlexibleWidth;
+}

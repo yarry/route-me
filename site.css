@@ -1,0 +1,184 @@
+.splash {
+  background:url(images/splash.png) no-repeat center center;
+  background-size:800px 240px;
+  }
+.wireframe {
+  border:3px solid rgba(0,0,0,0.5);
+  border-radius:20px;
+  }
+  .wireframe * { border-color:rgba(0,0,0,0.5); }
+  .wireframe .dot {
+    display:inline-block;
+    width:10px;
+    height:10px;
+    }
+    .wireframe .dot.menu {
+      width:60px;
+      height:60px;
+      }
+
+.wireframe.example .dot      { margin-top:90px; }
+.wireframe.example .dot.menu { margin-top:65px; }
+.dark .wireframe { border-color:rgba(255,255,255,1); }
+
+.install > div        { display:none; }
+.install:target > div { display:block; }
+
+.fill-white pre { background-color:transparent; }
+
+.fill-notes {
+  background-color: #374f59;
+}
+
+/* phone */
+
+.device {
+  border-radius: 30px;
+  border-style: solid;
+  border-color: #374f59;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.device.device-phone-v {
+  max-width: 300px;
+}
+.device.device-phone-v.device-white,
+.device.device-phone-h.device-white {
+  border-color: #fff;
+}
+
+.device.device-phone-v, .device.device-phone-v.device-white, {
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.device.device-phone-v .device-content {
+  max-height: 400px;
+}
+
+.device.device-phone-v:before,
+.device.device-phone-v:after {
+  content: '';
+  z-index: 10;
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: -35px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,.25);
+}
+
+.device.device-phone-v.device-white:before,
+.device.device-phone-v.device-white:after {
+  content: '';
+  z-index: 10;
+  display: block;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: -35px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,.05);
+}
+
+.device.device-phone-v:after, .device.device-phone-v.device-white:after  {
+  top: auto;
+  bottom: -50px;
+  height: 30px;
+  width: 30px;
+}
+
+@media (max-width: 350px ){
+  .device.device-phone-v {
+    border-width: 60px 15px;
+  }
+}
+
+.device.device-phone-h {
+  border-width: 25px 70px;
+}
+
+.device.device-phone-h .device-content {
+  max-height: none;
+}
+
+.device.device-phone-h:before,
+.device.device-phone-h:after {
+  content: '';
+  z-index: 10;
+  display: block;
+  position: absolute;
+  margin: auto;
+  left: none;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,.25);
+}
+.device.device-phone-h.device-white:before,
+.device.device-phone-h.device-white:after {
+  content: '';
+  z-index: 10;
+  display: block;
+  position: absolute;
+  margin: auto;
+  left: none;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background-color: rgba(0,0,0,.05);
+}
+
+.device.device-phone-h:after, .device.device-phone-h.device-white:after {
+  top: 50%;
+  left: -50px;
+  height: 30px;
+  width: 30px;
+  margin-top: -15px;
+}
+
+.device.device-phone-h:before, .device.device-phone-h.device-white:before {
+  top: 50%;
+  right: -35px;
+  margin-top: -5px;
+}
+
+@media (max-width: 500px) {
+  .device.device.device-phone-h {
+    border-width: 15px 55px;
+  }
+  .device.device-phone-h:after, .device.device-phone-h.device-white:after {
+    width: 20px;
+    height: 20px;
+    left: -40px;
+    margin-top: -10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .device.device.device-phone-h {
+    border-width: 15px 40px;
+  }
+  .device.device-phone-h:after, .device.device-phone-h.device-white:after {
+    width: 20px;
+    height: 20px;
+    left: -30px;
+    margin-top: -10px;
+  }
+
+  .device.device-phone-h:before, .device.device-phone-h.device-white:before {
+    top: 50%;
+    right: -25px;
+    margin-top: -5px;
+  }
+}
