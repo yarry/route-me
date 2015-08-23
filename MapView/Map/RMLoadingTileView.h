@@ -28,8 +28,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RMLoadingTileView : UIScrollView
+@interface RMLoadingTileView : UIScrollView<UIAppearance>
 
 @property (nonatomic, assign) BOOL mapZooming;
+
+@property (nonatomic, strong) UIColor* tilesBackgroundColor UI_APPEARANCE_SELECTOR;
 
 @end

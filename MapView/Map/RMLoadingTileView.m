@@ -33,6 +33,7 @@
 @implementation RMLoadingTileView
 {
     UIView *_contentView;
+    UIColor *_tilesBackgroundColor;
 }
 
 @synthesize mapZooming=_mapZooming;
@@ -52,9 +53,19 @@
         self.showsHorizontalScrollIndicator = NO;
         self.showsVerticalScrollIndicator = NO;
     }
-    
+
     return self;
 }
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    CGRect frame = self.frame;
+    _contentView.frame = CGRectMake(0, 0, frame.size.width * 3, frame.size.height * 3);
+    self.contentSize = _contentView.bounds.size;
+    [self setContentOffset:self.contentOffset];
+}
+
+
 
 - (void)setMapZooming:(BOOL)zooming
 {
@@ -64,20 +75,38 @@
     }
     else
     {
-        _contentView.backgroundColor = [UIColor colorWithPatternImage:[RMMapView resourceImageNamed:(RMPostVersion6 ? @"LoadingTile6.png" : @"LoadingTile.png")]];
-        
+        _contentView.backgroundColor = self.tilesBackgroundColor;
         _contentView.frame = CGRectMake(0, 0, self.frame.size.width * 3, self.frame.size.height * 3);
         self.contentSize = _contentView.bounds.size;
         self.contentOffset = CGPointMake(self.frame.size.width, self.frame.size.height);
     }
-    
+
     _mapZooming = zooming;
 }
+
+- (UIColor *)tilesBackgroundColor
+{
+    if(!_tilesBackgroundColor)
+    {
+        _tilesBackgroundColor = [UIColor colorWithPatternImage:[RMMapView resourceImageNamed:(@"LoadingTile.png")]];
+    }
+    return _tilesBackgroundColor;
+}
+
+- (void)setTilesBackgroundColor:(UIColor *)tilesBackgroundColor
+{
+    _tilesBackgroundColor = tilesBackgroundColor;
+    if(!_mapZooming)
+    {
+        _contentView.backgroundColor = self.tilesBackgroundColor;
+    }
+}
+
 
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     CGPoint newContentOffset = contentOffset;
-    
+
     if (newContentOffset.x > 2 * self.contentSize.width / 3)
     {
         newContentOffset.x = self.bounds.size.width;

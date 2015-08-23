@@ -632,6 +632,8 @@
 
 - (void)layoutSubviews
 {
+    _loadingTileView.frame = self.bounds;
+
     if ( ! _mapScrollView)
     {
         // This will happen after initWithCoder: This needs to happen here because during
