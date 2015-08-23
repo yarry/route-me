@@ -109,6 +109,6 @@
 - (void)didReceiveMemoryWarning;
 
 @optional
-- (void)asyncImageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache completion:(void(^)(UIImage* image))completion;
+- (NSOperation*)asyncImageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache completion:(void(^)(UIImage* image))completion;
 - (UIImage *)cachedImageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache;
 @end
