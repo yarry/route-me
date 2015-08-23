@@ -27,24 +27,24 @@
 
 #import "RMDatabaseCache.h"
 #import "FMDB.h"
-#import "RMTileImage.h"
-#import "RMTile.h"
 
 #define kWriteQueueLimit 15
 
 @interface RMDatabaseCache ()
 
 - (NSUInteger)count;
+
 - (NSUInteger)countTiles;
+
 - (void)touchTile:(RMTile)tile withKey:(NSString *)cacheKey;
+
 - (void)purgeTiles:(NSUInteger)count;
 
 @end
 
 #pragma mark -
 
-@implementation RMDatabaseCache
-{
+@implementation RMDatabaseCache {
     // Database
     FMDatabaseQueue *_queue;
 
@@ -61,34 +61,31 @@
 
 @synthesize databasePath = _databasePath;
 
-+ (NSString *)dbPathUsingCacheDir:(BOOL)useCacheDir
-{
-	NSArray *paths;
++ (NSString *)dbPathUsingCacheDir:(BOOL)useCacheDir {
+    NSArray *paths;
 
-	if (useCacheDir)
-		paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	else
-		paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    if (useCacheDir)
+        paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    else
+        paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 
-	if ([paths count] > 0) // Should only be one...
-	{
-		NSString *cachePath = [paths objectAtIndex:0];
+    if ([paths count] > 0) // Should only be one...
+    {
+        NSString *cachePath = [paths objectAtIndex:0];
 
-		// check for existence of cache directory
-		if ( ![[NSFileManager defaultManager] fileExistsAtPath: cachePath])
-		{
-			// create a new cache directory
-			[[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:NO attributes:nil error:nil];
-		}
+        // check for existence of cache directory
+        if (![[NSFileManager defaultManager] fileExistsAtPath:cachePath]) {
+            // create a new cache directory
+            [[NSFileManager defaultManager] createDirectoryAtPath:cachePath withIntermediateDirectories:NO attributes:nil error:nil];
+        }
 
-		return [cachePath stringByAppendingPathComponent:@"RMTileCache.db"];
-	}
+        return [cachePath stringByAppendingPathComponent:@"RMTileCache.db"];
+    }
 
-	return nil;
+    return nil;
 }
 
-- (void)configureDBForFirstUse
-{
+- (void)configureDBForFirstUse {
     [_queue inDatabase:^(FMDatabase *db) {
         [[db executeQuery:@"PRAGMA synchronous=OFF"] close];
         [[db executeQuery:@"PRAGMA journal_mode=OFF"] close];
@@ -100,12 +97,11 @@
     }];
 }
 
-- (id)initWithDatabase:(NSString *)path
-{
-	if (!(self = [super init]))
-		return nil;
+- (id)initWithDatabase:(NSString *)path {
+    if (!(self = [super init]))
+        return nil;
 
-	self.databasePath = path;
+    self.databasePath = path;
 
     _writeQueue = [NSOperationQueue new];
     [_writeQueue setMaxConcurrentOperationCount:1];
@@ -113,123 +109,107 @@
 
     _queue = [FMDatabaseQueue databaseQueueWithPath:path];
 
-	if (!_queue)
-	{
-		RMLog(@"Could not connect to database");
+    if (!_queue) {
+        RMLog(@"Could not connect to database");
 
         [[NSFileManager defaultManager] removeItemAtPath:path error:NULL];
 
         return nil;
-	}
+    }
 
     [_queue inDatabase:^(FMDatabase *db) {
         [db setCrashOnErrors:NO];
         [db setShouldCacheStatements:TRUE];
     }];
 
-	[self configureDBForFirstUse];
+    [self configureDBForFirstUse];
 
     _tileCount = [self countTiles];
 
-	return self;	
+    return self;
 }
 
-- (id)initUsingCacheDir:(BOOL)useCacheDir
-{
-	return [self initWithDatabase:[RMDatabaseCache dbPathUsingCacheDir:useCacheDir]];
+- (id)initUsingCacheDir:(BOOL)useCacheDir {
+    return [self initWithDatabase:[RMDatabaseCache dbPathUsingCacheDir:useCacheDir]];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [_writeQueueLock lock];
-     _writeQueue = nil;
+    _writeQueue = nil;
     [_writeQueueLock unlock];
-     _writeQueueLock = nil;
-     _queue = nil;
+    _writeQueueLock = nil;
+    _queue = nil;
 }
 
-- (void)setPurgeStrategy:(RMCachePurgeStrategy)theStrategy
-{
-	_purgeStrategy = theStrategy;
+- (void)setPurgeStrategy:(RMCachePurgeStrategy)theStrategy {
+    _purgeStrategy = theStrategy;
 }
 
-- (void)setCapacity:(NSUInteger)theCapacity
-{
-	_capacity = theCapacity;
+- (void)setCapacity:(NSUInteger)theCapacity {
+    _capacity = theCapacity;
 }
 
-- (NSUInteger)capacity
-{
+- (NSUInteger)capacity {
     return _capacity;
 }
 
-- (void)setMinimalPurge:(NSUInteger)theMinimalPurge
-{
-	_minimalPurge = theMinimalPurge;
+- (void)setMinimalPurge:(NSUInteger)theMinimalPurge {
+    _minimalPurge = theMinimalPurge;
 }
 
-- (void)setExpiryPeriod:(NSTimeInterval)theExpiryPeriod
-{
+- (void)setExpiryPeriod:(NSTimeInterval)theExpiryPeriod {
     _expiryPeriod = theExpiryPeriod;
-    
-    srand((unsigned int)time(NULL));
+
+    srand((unsigned int) time(NULL));
 }
 
-- (unsigned long long)fileSize
-{
+- (unsigned long long)fileSize {
     return [[[NSFileManager defaultManager] attributesOfItemAtPath:self.databasePath error:nil] fileSize];
 }
 
-- (UIImage *)cachedImage:(RMTile)tile withCacheKey:(NSString *)aCacheKey
-{
+- (UIImage *)cachedImage:(RMTile)tile withCacheKey:(NSString *)aCacheKey {
 //	RMLog(@"DB cache check for tile %d %d %d", tile.x, tile.y, tile.zoom);
 
     __block UIImage *cachedImage = nil;
 
     [_writeQueueLock lock];
 
-    [_queue inDatabase:^(FMDatabase *db)
-     {
-         FMResultSet *results = [db executeQuery:@"SELECT data FROM ZCACHE WHERE tile_hash = ? AND cache_key = ?", [RMTileCache tileHash:tile], aCacheKey];
+    [_queue inDatabase:^(FMDatabase *db) {
+        FMResultSet *results = [db executeQuery:@"SELECT data FROM ZCACHE WHERE tile_hash = ? AND cache_key = ?", [RMTileCache tileHash:tile], aCacheKey];
 
-         if ([db hadError])
-         {
-             RMLog(@"DB error while fetching tile data: %@", [db lastErrorMessage]);
-             return;
-         }
+        if ([db hadError]) {
+            RMLog(@"DB error while fetching tile data: %@", [db lastErrorMessage]);
+            return;
+        }
 
-         NSData *data = nil;
+        NSData *data = nil;
 
-         if ([results next])
-         {
-             data = [results dataForColumnIndex:0];
-             if (data) cachedImage = [UIImage imageWithData:data];
-         }
+        if ([results next]) {
+            data = [results dataForColumnIndex:0];
+            if (data) cachedImage = [UIImage imageWithData:data];
+        }
 
-         [results close];
-     }];
+        [results close];
+    }];
 
     [_writeQueueLock unlock];
 
     if (_capacity != 0 && _purgeStrategy == RMCachePurgeStrategyLRU)
         [self touchTile:tile withKey:aCacheKey];
 
-    if (_expiryPeriod > 0)
-    {
-        if (rand() % 100 == 0)
-        {
+    if (_expiryPeriod > 0) {
+        if (rand() % 100 == 0) {
             [_writeQueueLock lock];
 
-            [_queue inDatabase:^(FMDatabase *db)
-             {
-                 BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE last_used < ?", [NSDate dateWithTimeIntervalSinceNow:-_expiryPeriod]];
+            [_queue inDatabase:^(FMDatabase *db) {
+                BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE last_used < ?", [NSDate dateWithTimeIntervalSinceNow:-_expiryPeriod]];
 
-                 if (result)
-                     result = [db executeUpdate:@"VACUUM"];
+                if (result)
+                    result = [db executeUpdate:@"VACUUM"];
 
-                 if ( ! result)
-                     RMLog(@"Error expiring cache");
-             }];
+                if (!result)
+                        RMLog(@"Error expiring cache");
+            }];
 
             [_writeQueueLock unlock];
 
@@ -239,22 +219,19 @@
 
 //    RMLog(@"DB cache     hit    tile %d %d %d (%@)", tile.x, tile.y, tile.zoom, [RMTileCache tileHash:tile]);
 
-	return cachedImage;
+    return cachedImage;
 }
 
-- (void)addImage:(UIImage *)image forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey
-{
+- (void)addImage:(UIImage *)image forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey {
     [self addDiskCachedImageData:UIImagePNGRepresentation(image) forTile:tile withCacheKey:aCacheKey];
 }
 
-- (void)addDiskCachedImageData:(NSData *)data forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey
-{
-    if (_capacity != 0)
-    {
+- (void)addDiskCachedImageData:(NSData *)data forTile:(RMTile)tile withCacheKey:(NSString *)aCacheKey {
+    if (_capacity != 0) {
         NSUInteger tilesInDb = [self count];
 
         if (_capacity <= tilesInDb && _expiryPeriod == 0)
-            [self purgeTiles:MAX(_minimalPurge, 1+tilesInDb-_capacity)];
+            [self purgeTiles:MAX(_minimalPurge, 1 + tilesInDb - _capacity)];
 
 //        RMLog(@"DB cache     insert tile %d %d %d (%@)", tile.x, tile.y, tile.zoom, [RMTileCache tileHash:tile]);
 
@@ -278,90 +255,87 @@
 
             [_writeQueueLock lock];
 
-            [_queue inDatabase:^(FMDatabase *db)
-             {
-                 result = [db executeUpdate:@"INSERT OR IGNORE INTO ZCACHE (tile_hash, cache_key, last_used, data) VALUES (?, ?, ?, ?)", [RMTileCache tileHash:tile], aCacheKey, [NSDate date], data];
-             }];
+            [_queue inDatabase:^(FMDatabase *db) {
+                result = [db executeUpdate:@"INSERT OR IGNORE INTO ZCACHE (tile_hash, cache_key, last_used, data) VALUES (?, ?, ?, ?)", [RMTileCache tileHash:tile], aCacheKey, [NSDate date], data];
+            }];
 
             [_writeQueueLock unlock];
 
             if (result == NO)
-                RMLog(@"Error occured adding data");
+                    RMLog(@"Error occured adding data");
             else
                 _tileCount++;
         }];
-	}
+    }
 }
 
 #pragma mark -
 
-- (NSUInteger)count
-{
+- (NSUInteger)count {
     return _tileCount;
 }
 
-- (NSUInteger)countTiles
-{
+- (NSUInteger)countTiles {
     __block NSUInteger count = 0;
 
     [_writeQueueLock lock];
 
-    [_queue inDatabase:^(FMDatabase *db)
-     {
-         FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM ZCACHE"];
+    [_queue inDatabase:^(FMDatabase *db) {
+        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM ZCACHE"];
 
-         if ([results next])
-             count = [results intForColumnIndex:0];
-         else
-             RMLog(@"Unable to count columns");
+        if ([results next])
+            count = [results intForColumnIndex:0];
+        else
+                RMLog(@"Unable to count columns");
 
-         [results close];
-     }];
-
-    [_writeQueueLock unlock];
-
-	return count;
-}
-
-- (void)purgeTiles:(NSUInteger)count
-{
-    RMLog(@"purging %lu old tiles from the db cache", (unsigned long)count);
-
-    [_writeQueueLock lock];
-
-    [_queue inDatabase:^(FMDatabase *db)
-     {
-         BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE tile_hash IN (SELECT tile_hash FROM ZCACHE ORDER BY last_used LIMIT ?)", [NSNumber numberWithUnsignedLongLong:count]];
-
-         if (result)
-             result = [db executeUpdate:@"VACUUM"];
-
-         if ( ! result)
-             RMLog(@"Error purging cache");
-     }];
+        [results close];
+    }];
 
     [_writeQueueLock unlock];
 
-    _tileCount = [self countTiles];
+    return count;
 }
 
-- (void)removeAllCachedImages 
-{
+- (void)purgeTiles:(NSUInteger)count {
+    [_queue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        if (_tileCount < _capacity) {
+            return;
+        }
+        RMLog(@"purging %lu old tiles from the db cache", (unsigned long) count);
+
+        BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE tile_hash IN (SELECT tile_hash FROM ZCACHE ORDER BY last_used LIMIT ?)", @(count)];
+
+        if (!result)
+                RMLog(@"Error purging cache");
+
+        FMResultSet *results = [db executeQuery:@"SELECT COUNT(*) FROM ZCACHE"];
+
+        if ([results next]) {
+            _tileCount = (NSUInteger) [results intForColumnIndex:0];
+        }
+        else {
+            RMLog(@"Unable to count columns");
+        }
+
+        [results close];
+    }];
+}
+
+- (void)removeAllCachedImages {
     RMLog(@"removing all tiles from the db cache");
 
     [_writeQueue addOperationWithBlock:^{
         [_writeQueueLock lock];
 
-        [_queue inDatabase:^(FMDatabase *db)
-         {
-             BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE"];
+        [_queue inDatabase:^(FMDatabase *db) {
+            BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE"];
 
-             if (result)
-                 result = [db executeUpdate:@"VACUUM"];
+            if (result)
+                result = [db executeUpdate:@"VACUUM"];
 
-             if ( ! result)
-                 RMLog(@"Error purging cache");
-         }];
+            if (!result)
+                    RMLog(@"Error purging cache");
+        }];
 
         [_writeQueueLock unlock];
 
@@ -369,23 +343,21 @@
     }];
 }
 
-- (void)removeAllCachedImagesForCacheKey:(NSString *)cacheKey
-{
+- (void)removeAllCachedImagesForCacheKey:(NSString *)cacheKey {
     RMLog(@"removing tiles for key '%@' from the db cache", cacheKey);
 
     [_writeQueue addOperationWithBlock:^{
         [_writeQueueLock lock];
 
-        [_queue inDatabase:^(FMDatabase *db)
-         {
-             BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE cache_key = ?", cacheKey];
+        [_queue inDatabase:^(FMDatabase *db) {
+            BOOL result = [db executeUpdate:@"DELETE FROM ZCACHE WHERE cache_key = ?", cacheKey];
 
-             if (result)
-                 result = [db executeUpdate:@"VACUUM"];
+            if (result)
+                result = [db executeUpdate:@"VACUUM"];
 
-             if ( ! result)
-                 RMLog(@"Error purging cache");
-         }];
+            if (!result)
+                    RMLog(@"Error purging cache");
+        }];
 
         [_writeQueueLock unlock];
 
@@ -393,25 +365,22 @@
     }];
 }
 
-- (void)touchTile:(RMTile)tile withKey:(NSString *)cacheKey
-{
+- (void)touchTile:(RMTile)tile withKey:(NSString *)cacheKey {
     [_writeQueue addOperationWithBlock:^{
         [_writeQueueLock lock];
 
-        [_queue inDatabase:^(FMDatabase *db)
-         {
-             BOOL result = [db executeUpdate:@"UPDATE ZCACHE SET last_used = ? WHERE tile_hash = ? AND cache_key = ?", [NSDate date], [RMTileCache tileHash:tile], cacheKey];
+        [_queue inDatabase:^(FMDatabase *db) {
+            BOOL result = [db executeUpdate:@"UPDATE ZCACHE SET last_used = ? WHERE tile_hash = ? AND cache_key = ?", [NSDate date], [RMTileCache tileHash:tile], cacheKey];
 
-             if (result == NO)
-                 RMLog(@"Error touching tile");
-         }];
+            if (result == NO)
+                    RMLog(@"Error touching tile");
+        }];
 
         [_writeQueueLock unlock];
     }];
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     RMLog(@"Low memory in the database tilecache");
 
     [_writeQueueLock lock];

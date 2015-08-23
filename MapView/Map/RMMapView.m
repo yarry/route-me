@@ -2087,6 +2087,11 @@
 #pragma mark -
 #pragma mark Snapshots
 
+- (void)setUseSnapshotRenderer:(BOOL)snapshot {
+    for (RMMapTiledLayerView *tiledLayerView in _tiledLayersSuperview.subviews)
+        tiledLayerView.useSnapshotRenderer = snapshot;
+}
+
 - (UIImage *)takeSnapshotAndIncludeOverlay:(BOOL)includeOverlay
 {
     _overlayView.hidden = !includeOverlay;
@@ -2639,7 +2644,7 @@
     if (!self.adjustTilesForRetinaDisplay && _screenScale > 1.0 && ! [RMMapboxSource isUsingLargeTiles])
         return [self zoom] + 1.0;
 
-    return [self zoom];
+    return [self zoom] + self.zoomAdjustment;
 }
 
 - (RMProjection *)projection

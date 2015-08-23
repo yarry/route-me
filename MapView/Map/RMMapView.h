@@ -207,6 +207,9 @@ typedef enum : NSUInteger {
 /** The current zoom level of the map. */
 @property (nonatomic, assign) float zoom;
 
+/** The zoom adjustment level. */
+@property(nonatomic) float zoomAdjustment;
+
 /** The minimum zoom level of the map, clamped to the range supported by the tile source(s). */
 @property (nonatomic, assign) float minZoom;
 
@@ -294,7 +297,9 @@ typedef enum : NSUInteger {
 *   @return An image depicting the map view. */
 - (UIImage *)takeSnapshot;
 
-/** Take a snapshot of the map view. 
+- (void)setUseSnapshotRenderer:(BOOL)snapshot;
+
+/** Take a snapshot of the map view.
 *   @param includeOverlay Whether to include the overlay containing any visible annotations. 
 *   @return An image depicting the map view. */
 - (UIImage *)takeSnapshotAndIncludeOverlay:(BOOL)includeOverlay;

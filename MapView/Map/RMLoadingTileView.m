@@ -88,7 +88,7 @@
 {
     if(!_tilesBackgroundColor)
     {
-        _tilesBackgroundColor = [UIColor colorWithPatternImage:[RMMapView resourceImageNamed:(@"LoadingTile.png")]];
+        _tilesBackgroundColor = [UIColor colorWithPatternImage:[RMMapView resourceImageNamed:(@"LoadingTile6.png")]];
     }
     return _tilesBackgroundColor;
 }
