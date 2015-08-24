@@ -72,7 +72,7 @@
     shapeLayer.rasterizationScale = [[UIScreen mainScreen] scale];
     shapeLayer.lineWidth = lineWidth;
     shapeLayer.lineCap = kCALineCapButt;
-    shapeLayer.lineJoin = kCALineJoinMiter;
+    shapeLayer.lineJoin = kCALineJoinRound;
     shapeLayer.strokeColor = [UIColor blackColor].CGColor;
     shapeLayer.fillColor = [UIColor clearColor].CGColor;
     shapeLayer.shadowRadius = 0.0;
