@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'Mapbox-iOS-SDK'
-  m.version = '1.6.1'
+  m.version = '1.6.2'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -22,7 +22,7 @@ Pod::Spec.new do |m|
 
   m.module_name = 'Mapbox_iOS_SDK'
 
-  m.source_files = 'Proj4/proj_api.h', 'MapView/Map/*.{h,c,m}'
+  m.source_files = 'MapView/Map/*.{h,c,m}'
 
   m.prefix_header_file = 'MapView/MapView_Prefix.pch'
 
@@ -63,19 +63,20 @@ Pod::Spec.new do |m|
 
   m.frameworks = 'CoreGraphics', 'CoreLocation', 'Foundation', 'QuartzCore', 'UIKit'
 
-  m.libraries = 'Proj4', 'sqlite3', 'z'
+  m.libraries = 'sqlite3', 'z'
 
   m.xcconfig = {
-    'OTHER_LDFLAGS'        => '-ObjC',
-    'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/Mapbox-iOS-SDK/Proj4"'
+    'OTHER_LDFLAGS'        => '-ObjC'
+    #'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/Mapbox-iOS-SDK/Proj4"'
   }
 
   m.preserve_paths = 'MapView/MapView.xcodeproj', 'MapView/Map/Resources'
 
-  m.vendored_libraries = 'Proj4/libProj4.a'
+  #m.vendored_libraries = 'Proj4/libProj4.a'
 
   m.dependency 'FMDB', '~> 2.3'
   m.dependency 'GRMustache', '~> 7.3.0'
   m.dependency 'SMCalloutView', '~> 2.0'
+  m.dependency 'proj4'
 
 end
