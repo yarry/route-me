@@ -84,6 +84,11 @@
 }
 
 - (void)drawLayer:(CALayer *)layer inContext:(CGContextRef)context {
+    
+    if(!_mapView) {
+        return;
+    }
+    
     CGRect rect = CGContextGetClipBoundingBox(context);
     CGRect bounds = self.bounds;
     short zoom = log2(bounds.size.width / rect.size.width);
@@ -141,6 +146,8 @@
                     databaseCache = (RMDatabaseCache *) componentCache;
 
             RMTile tile = RMTileMake(x, y, zoom);
+            
+            __weak typeof(self) weakSelf = self;
 
             if ([_tileSource respondsToSelector:@selector(asyncImageForTile:inCache:completion:)]) {
                 UIImage *cachedImage = [_tileSource cachedImageForTile:tile inCache:[_mapView tileCache]];
@@ -149,8 +156,12 @@
                 }
                 else {
                     [_tileSource asyncImageForTile:tile inCache:[_mapView tileCache] completion:^(UIImage *image) {
+                        typeof(self) strongSelf = weakSelf;
+                        if(!strongSelf || !strongSelf->_mapView) {
+                            return;
+                        }
                         if (image) {
-                            [self.layer setNeedsDisplayInRect:rect];
+                            [strongSelf.layer setNeedsDisplayInRect:rect];
                         }
                     }];
                 }
