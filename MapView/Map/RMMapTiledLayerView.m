@@ -246,6 +246,7 @@
 
         if (IS_VALID_TILE_IMAGE(tileImage)) {
             if (_mapView.adjustTilesForRetinaDisplay && _mapView.screenScale > 1.0) {
+                tileImage = [UIImage imageWithCGImage:tileImage.CGImage];
                 // Crop the image
                 float xCrop = (floor(rect.origin.x / rect.size.width) / 2.0) - x;
                 float yCrop = (floor(rect.origin.y / rect.size.height) / 2.0) - y;
