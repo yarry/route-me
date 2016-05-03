@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'Mapbox-iOS-SDK'
-  m.version = '1.6.2'
+  m.version = '1.6.3'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -12,7 +12,7 @@ Pod::Spec.new do |m|
   m.social_media_url = 'https://twitter.com/Mapbox'
 
   m.source = {
-    :git => 'https://github.com/mapbox/mapbox-ios-sdk.git',
+    :git => 'https://github.com/yarry/route-me.git',
     :tag => m.version.to_s
   }
 
