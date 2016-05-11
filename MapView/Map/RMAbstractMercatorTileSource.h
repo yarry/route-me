@@ -26,7 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #import "RMTileSource.h"
-#import "RMFractalTileProjection.h"
 
 #pragma mark --- begin constants ---
 

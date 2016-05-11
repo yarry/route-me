@@ -32,11 +32,7 @@
 #import "RMFoundation.h"
 #import "RMMapViewDelegate.h"
 #import "RMTile.h"
-#import "RMProjection.h"
-#import "RMMapOverlayView.h"
-#import "RMMapTiledLayerView.h"
-#import "RMMapScrollView.h"
-#import "RMTileSourcesContainer.h"
+#import "RMTileSource.h"
 
 @class RMProjection;
 @class RMFractalTileProjection;
@@ -48,6 +44,9 @@
 @class RMAnnotation;
 @class RMQuadTree;
 @class RMUserLocation;
+@class RMMapScrollView;
+@class RMMapOverlayView;
+@class RMTileSourcesContainer;
 
 // constants for the scrollview deceleration mode
 typedef enum : NSUInteger {

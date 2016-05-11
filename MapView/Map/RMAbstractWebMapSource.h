@@ -26,7 +26,6 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #import "RMAbstractMercatorTileSource.h"
-#import "RMProjection.h"
 
 #define RMAbstractWebMapSourceDefaultRetryCount  3
 #define RMAbstractWebMapSourceDefaultWaitSeconds 15.0

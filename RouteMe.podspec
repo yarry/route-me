@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
-  m.name    = 'Mapbox-iOS-SDK'
-  m.version = '1.6.3'
+  m.name    = 'RouteMe'
+  m.version = '1.6.4'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -17,16 +17,25 @@ Pod::Spec.new do |m|
   }
 
   m.platform              = :ios
-  m.ios.deployment_target = '5.0'
+  m.ios.deployment_target = '8.0'
   m.requires_arc          = true
 
   m.module_name = 'Mapbox_iOS_SDK'
 
-  m.source_files = 'MapView/Map/*.{h,c,m}'
+  m.source_files = ['MapView/Map/*.{h,c,m}', 'Proj4/*.{c,h}']
+  m.exclude_files =  [
+    "**/proj.c",
+    "**/nad2bin.c",
+    "**/multistresstest.c",
+    "**/geod.c",
+    "**/cs2cs.c",
+    "**/nad2nad.c"
+  ]
 
   m.prefix_header_file = 'MapView/MapView_Prefix.pch'
 
   m.public_header_files = [
+    'MapView/Map/RMTile.h',
     'MapView/Map/Mapbox.h',
     'MapView/Map/RMAnnotation.h',
     'MapView/Map/RMCacheObject.h',
@@ -52,7 +61,16 @@ Pod::Spec.new do |m|
     'MapView/Map/RMTileCache.h',
     'MapView/Map/RMTileMillSource.h',
     'MapView/Map/RMUserLocation.h',
-    'MapView/Map/RMUserTrackingBarButtonItem.h'
+    'MapView/Map/RMUserTrackingBarButtonItem.h',
+    'MapView/Map/RMFoundation.h',
+    'MapView/Map/RMAbstractWebMapSource.h',
+    'MapView/Map/RMAbstractMercatorTileSource.h',
+    'MapView/Map/RMMapLayer.h',
+    'MapView/Map/RMGlobalConstants.h',
+    'MapView/Map/RMTileSource.h',
+    'MapView/Map/RMFractalTileProjection.h',
+    'MapView/Map/RMProjection.h',
+
   ]
 
   m.resource_bundle = {
@@ -66,8 +84,8 @@ Pod::Spec.new do |m|
   m.libraries = 'sqlite3', 'z'
 
   m.xcconfig = {
-    'OTHER_LDFLAGS'        => '-ObjC'
-    #'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/Mapbox-iOS-SDK/Proj4"'
+    'OTHER_LDFLAGS'        => '-ObjC',
+    #'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/MapboxSDK/Proj4"'
   }
 
   m.preserve_paths = 'MapView/MapView.xcodeproj', 'MapView/Map/Resources'
@@ -77,6 +95,5 @@ Pod::Spec.new do |m|
   m.dependency 'FMDB', '~> 2.3'
   m.dependency 'GRMustache', '~> 7.3.0'
   m.dependency 'SMCalloutView', '~> 2.0'
-  m.dependency 'proj4'
 
 end

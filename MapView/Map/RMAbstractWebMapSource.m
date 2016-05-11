@@ -29,6 +29,7 @@
 
 #import "RMTileCache.h"
 #import "RMConfiguration.h"
+#import "RMFractalTileProjection.h"
 
 #define HTTP_404_NOT_FOUND 404
 

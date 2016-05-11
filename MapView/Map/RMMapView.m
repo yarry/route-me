@@ -55,6 +55,10 @@
 
 #import "SMCalloutView.h"
 
+#import "RMMapScrollView.h"
+#import "RMTileSourcesContainer.h"
+#import "RMProjection.h"
+
 #pragma mark --- begin constants ----
 
 #define kZoomRectPixelBuffer 150.0
@@ -163,14 +167,14 @@
     UIView *_tiledLayersSuperview;
     RMLoadingTileView *_loadingTileView;
 
-    RMProjection *_projection;
-    RMFractalTileProjection *_mercatorToTileProjection;
-    RMTileSourcesContainer *_tileSourcesContainer;
+    __weak RMProjection *_projection;
+    __weak RMFractalTileProjection *_mercatorToTileProjection;
+    __weak RMTileSourcesContainer *_tileSourcesContainer;
 
     NSMutableArray *_earlyTileSources;
 
-    NSMutableSet *_annotations;
-    NSMutableSet *_visibleAnnotations;
+    __weak NSMutableSet *_annotations;
+    __weak NSMutableSet *_visibleAnnotations;
 
     BOOL _constrainMovement, _constrainMovementByUser;
     RMProjectedRect _constrainingProjectedBounds, _constrainingProjectedBoundsByUser;

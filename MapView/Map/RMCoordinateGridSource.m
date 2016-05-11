@@ -29,6 +29,7 @@
 #import "RMCoordinateGridSource.h"
 
 #import "RMTileCache.h"
+#import "RMFractalTileProjection.h"
 
 #define kTileSidePadding 25.0 // px
 

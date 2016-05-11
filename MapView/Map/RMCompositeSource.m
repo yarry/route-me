@@ -28,6 +28,7 @@
 
 #import "RMCompositeSource.h"
 #import "RMTileCache.h"
+#import "RMFractalTileProjection.h"
 
 @implementation RMCompositeSource
 {
