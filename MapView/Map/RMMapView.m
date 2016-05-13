@@ -167,14 +167,14 @@
     UIView *_tiledLayersSuperview;
     RMLoadingTileView *_loadingTileView;
 
-    __weak RMProjection *_projection;
-    __weak RMFractalTileProjection *_mercatorToTileProjection;
-    __weak RMTileSourcesContainer *_tileSourcesContainer;
+    RMProjection *_projection;
+    RMFractalTileProjection *_mercatorToTileProjection;
+    RMTileSourcesContainer *_tileSourcesContainer;
 
     NSMutableArray *_earlyTileSources;
 
-    __weak NSMutableSet *_annotations;
-    __weak NSMutableSet *_visibleAnnotations;
+    NSMutableSet *_annotations;
+    NSMutableSet *_visibleAnnotations;
 
     BOOL _constrainMovement, _constrainMovementByUser;
     RMProjectedRect _constrainingProjectedBounds, _constrainingProjectedBoundsByUser;
