@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'RouteMe'
-  m.version = '1.6.4'
+  m.version = '1.6.5'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -70,7 +70,7 @@ Pod::Spec.new do |m|
     'MapView/Map/RMTileSource.h',
     'MapView/Map/RMFractalTileProjection.h',
     'MapView/Map/RMProjection.h',
-
+    'MapView/Map/RMShapeAnnotation.h',
   ]
 
   m.resource_bundle = {
