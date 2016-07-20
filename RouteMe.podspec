@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'RouteMe'
-  m.version = '1.6.5'
+  m.version = '1.6.6'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -20,7 +20,7 @@ Pod::Spec.new do |m|
   m.ios.deployment_target = '8.0'
   m.requires_arc          = true
 
-  m.module_name = 'Mapbox_iOS_SDK'
+  m.module_name = 'RouteMe'
 
   m.source_files = ['MapView/Map/*.{h,c,m}', 'Proj4/*.{c,h}']
   m.exclude_files =  [
@@ -35,6 +35,7 @@ Pod::Spec.new do |m|
   m.prefix_header_file = 'MapView/MapView_Prefix.pch'
 
   m.public_header_files = [
+  	'MapView/Map/RouteMe.h',
     'MapView/Map/RMTile.h',
     'MapView/Map/Mapbox.h',
     'MapView/Map/RMAnnotation.h',
@@ -71,10 +72,11 @@ Pod::Spec.new do |m|
     'MapView/Map/RMFractalTileProjection.h',
     'MapView/Map/RMProjection.h',
     'MapView/Map/RMShapeAnnotation.h',
+    'MapView/Map/RMGenericMapSource.h',
   ]
 
   m.resource_bundle = {
-    'Mapbox' => 'MapView/Map/Resources/*'
+    'RouteMe' => 'MapView/Map/Resources/*'
   }
 
   m.documentation_url = 'https://www.mapbox.com/mapbox-ios-sdk'
