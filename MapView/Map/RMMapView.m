@@ -460,9 +460,9 @@
 
 + (NSString *)pathForBundleResourceNamed:(NSString *)name ofType:(NSString *)extension
 {
-    NSAssert([[NSBundle bundleForClass:[self class]] pathForResource:@"Mapbox" ofType:@"bundle"], @"Resource bundle not found in application.");
+    NSAssert([[NSBundle bundleForClass:[self class]] pathForResource:@"RouteMe" ofType:@"bundle"], @"Resource bundle not found in application.");
 
-    NSString *bundlePath      = [[NSBundle bundleForClass:[self class]] pathForResource:@"Mapbox" ofType:@"bundle"];
+    NSString *bundlePath      = [[NSBundle bundleForClass:[self class]] pathForResource:@"RouteMe" ofType:@"bundle"];
     NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
 
     return [resourcesBundle pathForResource:name ofType:extension];
