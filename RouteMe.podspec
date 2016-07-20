@@ -1,15 +1,13 @@
 Pod::Spec.new do |m|
 
   m.name    = 'RouteMe'
-  m.version = '1.6.6'
+  m.version = '1.6.7'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
-  m.homepage         = 'https://mapbox.com/mapbox-ios-sdk'
+  m.homepage         = 'https://github.com/yarry/route-me'
   m.license          = 'BSD'
   m.author           = { 'Mapbox' => 'mobile@mapbox.com' }
-  m.screenshot       = 'https://raw.github.com/mapbox/mapbox-ios-sdk/packaging/screenshot.png'
-  m.social_media_url = 'https://twitter.com/Mapbox'
 
   m.source = {
     :git => 'https://github.com/yarry/route-me.git',
@@ -87,12 +85,9 @@ Pod::Spec.new do |m|
 
   m.xcconfig = {
     'OTHER_LDFLAGS'        => '-ObjC',
-    #'LIBRARY_SEARCH_PATHS' => '"${PODS_ROOT}/MapboxSDK/Proj4"'
   }
 
   m.preserve_paths = 'MapView/MapView.xcodeproj', 'MapView/Map/Resources'
-
-  #m.vendored_libraries = 'Proj4/libProj4.a'
 
   m.dependency 'FMDB', '~> 2.3'
   m.dependency 'GRMustache', '~> 7.3.0'
