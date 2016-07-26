@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'RouteMe'
-  m.version = '1.6.7'
+  m.version = '1.6.8'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
