@@ -1899,14 +1899,6 @@
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
-    if (_currentCallout)
-    {
-        UIView *calloutCandidate = [_currentCallout hitTest:[_currentCallout convertPoint:point fromView:self] withEvent:event];
-
-        if (calloutCandidate)
-            return calloutCandidate;
-    }
-
     return [super hitTest:point withEvent:event];
 }
 
@@ -1926,8 +1918,6 @@
 
         [self correctPositionOfAllAnnotations];
 
-        anAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
-
         if (_delegateHasDidSelectAnnotation)
             [_delegate mapView:self didSelectAnnotation:anAnnotation];
     }
@@ -1937,15 +1927,12 @@
 {
     if ([annotation isEqual:_currentAnnotation])
     {
-        [_currentCallout dismissCalloutAnimated:animated];
-
         if (animated)
             [self performSelector:@selector(correctPositionOfAllAnnotations) withObject:nil afterDelay:1.0/3.0];
         else
             [self correctPositionOfAllAnnotations];
 
          _currentAnnotation = nil;
-         _currentCallout = nil;
 
         if (_delegateHasDidDeselectAnnotation)
             [_delegate mapView:self didDeselectAnnotation:annotation];
@@ -2684,10 +2671,6 @@
     if (updatePoints)
         [self correctPositionOfAllAnnotations];
 
-    // update callout view hierarchy
-    //
-    if (_currentCallout)
-        _currentCallout.tintColor = self.tintColor;
 }
 
 #pragma mark -
@@ -3137,10 +3120,6 @@
     for (CGFloat i = 0; i < [sortedAnnotations count]; i++)
         ((RMAnnotation *)[sortedAnnotations objectAtIndex:i]).layer.zPosition = (CGFloat)i;
 
-    // Bring any active callout annotation to the front.
-    //
-    if (_currentAnnotation)
-        _currentAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
 }
 
 - (NSArray *)annotations
