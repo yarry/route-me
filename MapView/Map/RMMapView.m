@@ -53,8 +53,6 @@
 
 #import "RMAttributionViewController.h"
 
-#import "SMCalloutView.h"
-
 #import "RMMapScrollView.h"
 #import "RMTileSourcesContainer.h"
 #import "RMProjection.h"
@@ -76,7 +74,6 @@
                                        UIGestureRecognizerDelegate,
                                        RMMapScrollViewDelegate,
                                        CLLocationManagerDelegate,
-                                       SMCalloutViewDelegate,
                                        UIPopoverControllerDelegate,
                                        UIViewControllerTransitioningDelegate,
                                        UIViewControllerAnimatedTransitioning>
@@ -214,7 +211,6 @@
     UIButton *_compassButton;
 
     RMAnnotation *_currentAnnotation;
-    SMCalloutView *_currentCallout;
 
     BOOL _rotateAtMinZoom;
 }
@@ -1928,44 +1924,6 @@
 
         _currentAnnotation = anAnnotation;
 
-        if (anAnnotation.layer.canShowCallout && anAnnotation.title)
-        {
-            _currentCallout = [SMCalloutView platformCalloutView];
-
-            if (RMPostVersion7)
-                _currentCallout.tintColor = self.tintColor;
-
-            _currentCallout.title    = anAnnotation.title;
-            _currentCallout.subtitle = anAnnotation.subtitle;
-
-            _currentCallout.calloutOffset = anAnnotation.layer.calloutOffset;
-
-            if (anAnnotation.layer.leftCalloutAccessoryView)
-            {
-                if ([anAnnotation.layer.leftCalloutAccessoryView isKindOfClass:[UIControl class]])
-                    [anAnnotation.layer.leftCalloutAccessoryView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapOnCalloutAccessoryWithGestureRecognizer:)]];
-
-                _currentCallout.leftAccessoryView = anAnnotation.layer.leftCalloutAccessoryView;
-            }
-
-            if (anAnnotation.layer.rightCalloutAccessoryView)
-            {
-                if ([anAnnotation.layer.rightCalloutAccessoryView isKindOfClass:[UIControl class]])
-                    [anAnnotation.layer.rightCalloutAccessoryView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapOnCalloutAccessoryWithGestureRecognizer:)]];
-
-                _currentCallout.rightAccessoryView = anAnnotation.layer.rightCalloutAccessoryView;
-            }
-
-            _currentCallout.delegate = self;
-
-            _currentCallout.permittedArrowDirection = SMCalloutArrowDirectionDown;
-
-            [_currentCallout presentCalloutFromRect:anAnnotation.layer.bounds
-                                            inLayer:anAnnotation.layer
-                                 constrainedToLayer:self.layer
-                                           animated:animated];
-        }
-
         [self correctPositionOfAllAnnotations];
 
         anAnnotation.layer.zPosition = _currentCallout.layer.zPosition = MAXFLOAT;
@@ -2002,25 +1960,6 @@
 - (RMAnnotation *)selectedAnnotation
 {
     return _currentAnnotation;
-}
-
-- (NSTimeInterval)calloutView:(SMCalloutView *)calloutView delayForRepositionWithSize:(CGSize)offset
-{
-    [self registerMoveEventByUser:NO];
-
-    CGPoint contentOffset = _mapScrollView.contentOffset;
-
-    contentOffset.x -= offset.width;
-    contentOffset.y -= offset.height;
-
-    if (RMPostVersion7)
-        contentOffset.y -= [[[self viewController] topLayoutGuide] length];
-
-    [_mapScrollView setContentOffset:contentOffset animated:YES];
-
-    [self completeMoveEventAfterDelay:kSMCalloutViewRepositionDelayForUIScrollView];
-
-    return kSMCalloutViewRepositionDelayForUIScrollView;
 }
 
 - (void)tapOnCalloutAccessoryWithGestureRecognizer:(UIGestureRecognizer *)recognizer

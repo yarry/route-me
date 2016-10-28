@@ -1,7 +1,7 @@
 Pod::Spec.new do |m|
 
   m.name    = 'RouteMe'
-  m.version = '1.6.8'
+  m.version = '1.7.0'
 
   m.summary          = 'An open source toolset for building mapping applications for iOS devices.'
   m.description      = 'An open source toolset for building mapping applications for iOS devices with great flexibility for visual styling, offline use, and customizability.'
@@ -15,7 +15,7 @@ Pod::Spec.new do |m|
   }
 
   m.platform              = :ios
-  m.ios.deployment_target = '8.0'
+  m.ios.deployment_target = '9.0'
   m.requires_arc          = true
 
   m.module_name = 'RouteMe'
@@ -90,7 +90,5 @@ Pod::Spec.new do |m|
   m.preserve_paths = 'MapView/MapView.xcodeproj', 'MapView/Map/Resources'
 
   m.dependency 'FMDB', '~> 2.3'
-  m.dependency 'GRMustache', '~> 7.3.0'
-  m.dependency 'SMCalloutView', '~> 2.0'
 
 end
